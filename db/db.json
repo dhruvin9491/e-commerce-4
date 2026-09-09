@@ -1,0 +1,70 @@
+{
+  "users": [
+    {
+      "name": "admin",
+      "email": "admin@gmail.com",
+      "password": "admin@123",
+      "role": "admin",
+      "id": "RYKJFCMAufM",
+      "isDeleted": true,
+      "createdAt": "2026-09-01T11:15:39.573Z",
+      "updatedAt": "2026-09-09T14:14:01.957Z"
+    },
+    {
+      "name": "admin",
+      "email": "admin@gmail.com",
+      "password": "admin@123",
+      "role": "admin",
+      "id": "SMgelSKCxTM",
+      "isDeleted": false,
+      "createdAt": "2026-09-01T11:15:39.573Z",
+      "updatedAt": "2026-09-01T11:15:39.573Z"
+    },
+    {
+      "name": "Dhruvin",
+      "email": "dhruvin9491@gmail.com",
+      "password": "123456",
+      "role": "user",
+      "id": "TYasgI2EcJQ",
+      "isDeleted": true,
+      "createdAt": "2026-09-01T11:33:18.373Z",
+      "updatedAt": "2026-09-09T14:14:04.202Z"
+    }
+  ],
+  "products": [
+    {
+      "id": "nW4s7Tre2T8",
+      "isDeleted": false,
+      "createdAt": "2026-09-09T13:23:10.255Z",
+      "updatedAt": "d0731943-61b8-44bb-befb-75378f937639",
+      "isActive": true,
+      "title": "Mascara Mascara",
+      "stock": 1200,
+      "price": 100,
+      "thumbnail": "https://paystubusa.com/images/logo.webp"
+    },
+    {
+      "id": "5K6ZAZZjHsY",
+      "isDeleted": false,
+      "createdAt": "2026-09-09T13:40:41.684Z",
+      "updatedAt": "ce937165-53f5-46fa-9cbd-091d7a2bc731",
+      "isActive": true,
+      "title": "lipstick lipstick",
+      "stock": 100,
+      "price": 250,
+      "thumbnail": "https://paystubusa.com/images/logo.webp"
+    },
+    {
+      "id": "4DIGxUe3vWU",
+      "isDeleted": false,
+      "createdAt": "2026-09-09T14:01:32.410Z",
+      "updatedAt": "2026-09-09T14:01:32.410Z",
+      "isActive": false,
+      "title": "testtesttest",
+      "stock": 33,
+      "price": 33,
+      "thumbnail": "https://paystubusa.com/images/logo.webp"
+    }
+  ],
+  "$schema": "./node_modules/json-server/schema.json"
+}
