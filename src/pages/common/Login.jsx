@@ -10,11 +10,12 @@ import { getData } from '../../helper/ApiHelper';
 import { USER_API } from '../../constants/ApiConstant';
 import { useAuth } from '../../helper/AuthHelper';
 import { showToast } from '../../helper/UiHelper';
-import { TOAST_TEXT } from '../../constants/UiTextConstant';
+import { useTranslation } from 'react-i18next';
 
 function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
+    const { t } = useTranslation();
 
     const formik = useFormik({
         initialValues: LOGIN_FORM_INIT_DATA,
@@ -25,15 +26,15 @@ function Login() {
                 const foundUser = data[0];
 
                 if (!foundUser || foundUser.password !== values.password) {
-                    return showToast('error', TOAST_TEXT.auth.invalidCredentials);
+                    return showToast('error', t('invalidCredentials'));
                 }
 
                 if (foundUser.isDeleted) {
-                    return showToast('warning', TOAST_TEXT.auth.inactiveAccount);
+                    return showToast('warning', t('inactiveAccount'));
                 }
 
                 login(foundUser);
-                showToast('success', TOAST_TEXT.auth.loginSuccess);
+                showToast('success', t('loginSuccess'));
                 navigate(foundUser.role === ROLES.ADMIN ? ADMIN_ROUTE.DASHBOARD : CLIENT_ROUTE.HOME);
             } catch (error) {
                 showToast('error', error.message);
@@ -46,20 +47,20 @@ function Login() {
             <section className="auth-panel">
                 <form onSubmit={formik.handleSubmit}>
                     <div className="mb-3">
-                        <Input name="email" type="email" placeholder="Email" formik={formik} />
+                        <Input name="email" type="email" placeholder={t('email')} formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="password" type="password" placeholder="Password" formik={formik} />
+                        <Input name="password" type="password" placeholder={t('password')} formik={formik} />
                     </div>
 
                     <button className="btn btn-primary btn-block" type="submit">
-                        Login
+                        {t('login')}
                     </button>
 
                     <p className="my-3 text-center">
-                        Not a member?
-                        <Link to={AUTH_ROUTE.REGISTER}> Signup</Link>
+                        {t('notMember')}
+                        <Link to={AUTH_ROUTE.REGISTER}> {t('signup')}</Link>
                     </p>
                 </form>
             </section>

@@ -1,22 +1,24 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { AUTH_ROUTE, CLIENT_ROUTE } from '../../constants/RoutesConstant';
 import { useAuth } from '../../helper/AuthHelper';
-import { LANG_TEXT, LANG_VALUE } from '../../constants/CommonConstant';
+import { LANG_VALUE } from '../../constants/CommonConstant';
 import { langContext } from '../../context/LangContext';
 import { confirmAction } from '../../helper/UiHelper';
-import { COMMON_TEXT, CONFIRM_TEXT } from '../../constants/UiTextConstant';
+import { useTranslation } from 'react-i18next';
 
 function Header() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const {changeLang} = useContext(langContext);
+    const { t } = useTranslation();
 
     const handleLogout = async () => {
         const isConfirmed = await confirmAction({
-            ...CONFIRM_TEXT.signOut.store,
-            confirmButtonText: CONFIRM_TEXT.signOut.button,
+            title: t('signOutStoreTitle'),
+            text: t('signOutStoreText'),
+            confirmButtonText: t('signOutButton'),
             icon: "question"
         });
 
@@ -37,24 +39,24 @@ function Header() {
                 </Link>
 
                 <nav className="store-nav">
-                    <Link to={CLIENT_ROUTE.HOME}>Home</Link>
-                    <Link to={CLIENT_ROUTE.PROFILE}>Profile</Link>
-                    <Link to={CLIENT_ROUTE.STORE}>Store</Link>
+                    <Link to={CLIENT_ROUTE.HOME}>{t('home')}</Link>
+                    <Link to={CLIENT_ROUTE.PROFILE}>{t('profile')}</Link>
+                    <Link to={CLIENT_ROUTE.STORE}>{t('store')}</Link>
                 </nav>
 
                 <div className="store-header__actions">
-                    <span className="welcome text-nowrap">Hi, {user?.name || 'shopper'}</span>
+                    <span className="welcome text-nowrap">{t('navWelcome', { name: user?.name || t('shopper') })}</span>
                     <select onChange={(e) => changeLang(e.target.value)}  className='form-control form-select'>
                         {
                             Object.entries(LANG_VALUE).map((lang, i) => {
                                 return (
-                                    <option value={lang[1]} key={i}>{LANG_TEXT[lang[0]]}</option>
+                                    <option value={lang[1]} key={i}>{t(lang[0].toLowerCase())}</option>
                                 )
                             })
                         }
                     </select>
                     <button type="button" className="text-button text-nowrap" onClick={handleLogout}>
-                        {COMMON_TEXT.signOut}
+                        {t('signOut')}
                     </button>
                 </div>
             </div>

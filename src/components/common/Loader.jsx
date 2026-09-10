@@ -1,8 +1,9 @@
 import React from "react";
-import { COMMON_TEXT } from "../../constants/UiTextConstant";
+import { useTranslation } from 'react-i18next';
 
-function Loader({ label = COMMON_TEXT.loading }) {
-	return <div className="page-state page-state--compact"><span className="spinner" /><span>{label}</span></div>;
+function Loader({ label }) {
+	const { t } = useTranslation();
+	return <div className="page-state page-state--compact"><span className="spinner" /><span>{label || t('commonLoading')}</span></div>;
 }
 
 export default Loader;

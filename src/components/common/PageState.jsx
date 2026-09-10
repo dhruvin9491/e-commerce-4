@@ -1,6 +1,7 @@
 import React from "react";
-import { COMMON_TEXT } from "../../constants/UiTextConstant";
+import { useTranslation } from 'react-i18next';
 
 export function PageState({ title, message, action }) {
-    return <div className="page-state"><span className="eyebrow">{COMMON_TEXT.storeUpdate}</span><h2>{title}</h2>{message && <p>{message}</p>}{action}</div>;
+    const { t } = useTranslation();
+    return <div className="page-state"><span className="eyebrow">{t('storeUpdate')}</span><h2>{title}</h2>{message && <p>{message}</p>}{action}</div>;
 }

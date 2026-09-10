@@ -1,46 +1,42 @@
-import React, { useContext } from 'react';
+import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import Header from '../../components/user/Header';
 import StoreFooter from '../../components/user/StoreFooter';
 import { useAuth } from '../../helper/AuthHelper';
-import { langContext } from '../../context/LangContext';
-import { LANG_VALUE } from '../../constants/CommonConstant';
 
 function StoreHome() {
     const { user } = useAuth();
-    const {lang} = useContext(langContext);
+    const { t } = useTranslation();
     return (
         <>
             <Header />
 
             <main className="user-home">
                 <section className="user-home__card">
-                    <span className="eyebrow">Welcome</span>
+                    <span className="eyebrow">{t('homeWelcome')}</span>
                     <h1>
                         {
-                            lang === LANG_VALUE.GJ ? "નમસ્તે" :
-                            lang === LANG_VALUE.HI ? "नमस्ते" :
-                            "Hello"
+                            t('hello')
                         }, 
                         {user?.name || 'shopper'}
                         <br />
-                        <em>Welcome back.</em>
+                        <em>{t('welcomeBack')}</em>
                     </h1>
 
                     <p>
-                        This is your personal home page. You can view your profile and keep
-                        the experience simple and clean.
+                        {t('homeDescription')}
                     </p>
 
                     <div className="user-home__meta">
                         <div className="user-home__meta-item">
-                            <label>Account</label>
-                            <strong>{user?.role || 'user'}</strong>
+                            <label>{t('account')}</label>
+                            <strong>{user?.role || t('user')}</strong>
                         </div>
 
                         <div className="user-home__meta-item">
-                            <label>Status</label>
-                            <strong>{user?.isDeleted ? 'Inactive' : 'Active'}</strong>
+                            <label>{t('status')}</label>
+                            <strong>{user?.isDeleted ? t('inactive') : t('active')}</strong>
                         </div>
                     </div>
                 </section>
