@@ -8,6 +8,8 @@ import Register from './pages/common/Register';
 import Dashboard from './pages/admin/Dashboard';
 import ProductList from './pages/admin/product/ProductList';
 import ProductForm from './pages/admin/product/ProductForm';
+import ReviewList from './pages/admin/review/ReviewList';
+import ReviewForm from './pages/admin/review/ReviewForm';
 import UserList from './pages/admin/UserList';
 import AdminLayout from './components/admin/AdminLayout';
 import StoreHome from './pages/user/StoreHome';
@@ -42,6 +44,11 @@ function App() {
                             <Route path={ADMIN_ROUTE.PRODUCT_LIST} element={<ProductList />} />
                             <Route path={ADMIN_ROUTE.PRODUCT_CREATE} element={<ProductForm />} />
                             <Route path={`${ADMIN_ROUTE.PRODUCT_UPDATE}/:id`} element={<ProductForm />} />
+
+                            <Route path={ADMIN_ROUTE.REVIEW_LIST} element={<ReviewList />} />
+                            <Route path={ADMIN_ROUTE.REVIEW_CREATE} element={<ReviewForm />} />
+                            <Route path={`${ADMIN_ROUTE.REVIEW_UPDATE}/:id`} element={<ReviewForm />} />
+
                             <Route path={ADMIN_ROUTE.USER_LIST} element={<UserList />} />
                         </Route>
                     </Route>

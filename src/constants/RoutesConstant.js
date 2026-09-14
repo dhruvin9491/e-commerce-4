@@ -16,5 +16,8 @@ export const ADMIN_ROUTE = {
     PRODUCT_LIST: "/admin/product/list",
     PRODUCT_CREATE: "/admin/product/create",
     PRODUCT_UPDATE: "/admin/product/edit",
+    REVIEW_LIST: "/admin/review/list",
+    REVIEW_CREATE: "/admin/review/create",
+    REVIEW_UPDATE: "/admin/review/edit",
     USER_LIST: "/admin/users"
 }

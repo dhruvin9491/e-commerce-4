@@ -18,6 +18,7 @@ function Sidebar() {
 				<NavLink to={ADMIN_ROUTE.DASHBOARD} className={linkClass}>{t('dashboard')}</NavLink>
 				<NavLink to={ADMIN_ROUTE.PRODUCT_LIST} className={linkClass}>{t('products')}</NavLink>
 				<NavLink to={ADMIN_ROUTE.USER_LIST} className={linkClass}>{t('users')}</NavLink>
+				<NavLink to={ADMIN_ROUTE.REVIEW_LIST} className={linkClass}>{t('review')}</NavLink>
 		</nav>
 	</aside>;
 }

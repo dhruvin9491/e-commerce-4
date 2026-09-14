@@ -20,3 +20,11 @@ export const PRODUCT_YUP_SCHEMA = Yup.object({
         'Must be a valid image URL (jpg, jpeg, png, gif, webp, svg)'
     ).required(),
 })
+
+export const REVIEW_YUP_SCHEMA = Yup.object({
+    firstname: Yup.string().min(2).max(16).required(),
+    lastname: Yup.string().min(2).max(16).required(),
+    review: Yup.string().min(10).max(100).required(),
+    ratting: Yup.number().min(0).max(5).required(),
+    pid: Yup.string().required(),
+})
