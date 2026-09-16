@@ -5,24 +5,13 @@ import { AUTH_ROUTE, CLIENT_ROUTE } from '../../constants/RoutesConstant';
 import { useAuth } from '../../helper/AuthHelper';
 import { LANG_VALUE } from '../../constants/CommonConstant';
 import { langContext } from '../../context/LangContext';
-import { confirmAction } from '../../helper/UiHelper';
-import { useTranslation } from 'react-i18next';
 
 function Header() {
     const navigate = useNavigate();
     const { user, logout } = useAuth();
     const {changeLang} = useContext(langContext);
-    const { t } = useTranslation();
 
-    const handleLogout = async () => {
-        const isConfirmed = await confirmAction({
-            title: t('signOutStoreTitle'),
-            text: t('signOutStoreText'),
-            confirmButtonText: t('signOutButton'),
-            icon: "question"
-        });
-
-        if (!isConfirmed) return;
+    const handleLogout = () => {
         logout();
         navigate(AUTH_ROUTE.LOGIN, { replace: true });
     };
@@ -39,24 +28,18 @@ function Header() {
                 </Link>
 
                 <nav className="store-nav">
-                    <Link to={CLIENT_ROUTE.HOME}>{t('home')}</Link>
-                    <Link to={CLIENT_ROUTE.PROFILE}>{t('profile')}</Link>
-                    <Link to={CLIENT_ROUTE.STORE}>{t('store')}</Link>
+                    <Link to={CLIENT_ROUTE.HOME}>Home</Link>
+                    <Link to={CLIENT_ROUTE.PROFILE}>Profile</Link>
+                    <Link to={CLIENT_ROUTE.STORE}>Store</Link>
                 </nav>
 
                 <div className="store-header__actions">
-                    <span className="welcome text-nowrap">{t('navWelcome', { name: user?.name || t('shopper') })}</span>
+                    <span className="welcome text-nowrap">Hi, {user?.name || 'shopper'}</span>
                     <select onChange={(e) => changeLang(e.target.value)}  className='form-control form-select'>
-                        {
-                            Object.entries(LANG_VALUE).map((lang, i) => {
-                                return (
-                                    <option value={lang[1]} key={i}>{t(lang[0].toLowerCase())}</option>
-                                )
-                            })
-                        }
+                        {Object.entries(LANG_VALUE).map((lang, i) => <option value={lang[1]} key={i}>{lang[0]}</option>)}
                     </select>
                     <button type="button" className="text-button text-nowrap" onClick={handleLogout}>
-                        {t('signOut')}
+                        Sign out
                     </button>
                 </div>
             </div>

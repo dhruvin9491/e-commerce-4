@@ -1,9 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 
 function StoreFooter() {
-    const { t } = useTranslation();
     return (
         <footer className="store-footer">
             <div className="store-footer__inner">
@@ -15,12 +13,12 @@ function StoreFooter() {
                             <span className="brand__accent">lane</span>
                         </span>
                     </Link>
-                    <p>{t('footerDescription')}</p>
+                    <p>Simple, beautiful essentials for everyday living.</p>
                 </div>
 
                 <div className="store-footer__links">
-                        <Link to="/">{t('home')}</Link>
-                        <Link to="/profile">{t('profile')}</Link>
+                        <Link to="/">Home</Link>
+                        <Link to="/profile">Profile</Link>
                     <span>support@shoplane.local</span>
                 </div>
             </div>

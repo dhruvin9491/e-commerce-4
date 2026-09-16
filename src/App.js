@@ -47,7 +47,7 @@ function App() {
 
                             <Route path={ADMIN_ROUTE.REVIEW_LIST} element={<ReviewList />} />
                             <Route path={ADMIN_ROUTE.REVIEW_CREATE} element={<ReviewForm />} />
-                            <Route path={`${ADMIN_ROUTE.REVIEW_UPDATE}/:id`} element={<ReviewForm />} />
+                             <Route path={`${ADMIN_ROUTE.REVIEW_CREATE}/:pid`} element={<ReviewForm />} />
 
                             <Route path={ADMIN_ROUTE.USER_LIST} element={<UserList />} />
                         </Route>

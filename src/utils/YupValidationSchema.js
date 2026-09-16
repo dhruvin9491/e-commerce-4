@@ -1,7 +1,8 @@
 import * as Yup from "yup";
 
 export const REGISTER_YUP_SCHEMA = Yup.object({
-    name: Yup.string().min(2).max(56).required(),
+    firstname: Yup.string().min(2).max(56).required(),
+    lastname: Yup.string().min(2).max(56).required(),
     email: Yup.string().email().required(),
     password: Yup.string().min(6).max(12).required()
 });
@@ -21,10 +22,24 @@ export const PRODUCT_YUP_SCHEMA = Yup.object({
     ).required(),
 })
 
-export const REVIEW_YUP_SCHEMA = Yup.object({
+export const REVIEW_YUP_SCHEMA = (productVerification = {}) => Yup.object({
     firstname: Yup.string().min(2).max(16).required(),
     lastname: Yup.string().min(2).max(16).required(),
     review: Yup.string().min(10).max(100).required(),
     ratting: Yup.number().min(0).max(5).required(),
-    pid: Yup.string().required(),
-})
+    pid: Yup.string()
+        .trim()
+        .required('Product ID is required')
+        .test('verified-product', function (productId) {
+            const isVerified = productVerification.status === 'verified' && productVerification.id === productId;
+
+            if (isVerified) return true;
+            if (productVerification.status === 'not-found') {
+                return this.createError({ message: 'No product found with this ID' });
+            }
+            if (productVerification.status === 'checking') {
+                return this.createError({ message: 'Wait for product verification to finish' });
+            }
+            return this.createError({ message: 'Verify the product ID before adding the review' });
+        }),
+});

@@ -1,5 +1,6 @@
 export const REGISTER_FORM_INIT_DATA = {
-    name: "",
+    firstname: "",
+    lastname: "",
     email: "",
     password: null
 }

@@ -5,37 +5,28 @@ import { PRODUCT_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
 import { useNavigate, useParams } from 'react-router-dom';
 import Input from '../../../components/common/Input';
+import AdminFormHeader from '../../../components/admin/AdminFormHeader';
+import AdminButton from '../../../components/admin/AdminButton';
 import { GenerateMetaData } from '../../../helper/DataGenrateHelper';
 import { createData, getData, updateData } from '../../../helper/ApiHelper';
 import { PRODUCT_API } from '../../../constants/ApiConstant';
-import { confirmAction, showToast } from '../../../helper/UiHelper';
-import { useTranslation } from 'react-i18next';
+import { showToast } from '../../../helper/UiHelper';
 
-function ProductForm(props) {
+function ProductForm() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
-    const { t } = useTranslation();
 
     const formik = useFormik({
         initialValues: PRODUCT_FORM_INIT_DATA,
         validationSchema: PRODUCT_YUP_SCHEMA,
         onSubmit: async (values) => {
-            const isConfirmed = await confirmAction({
-                title: t(id ? 'confirm.updateTitle' : 'confirm.createTitle'),
-                text: t(id ? 'confirm.updateText' : 'confirm.createText'),
-                confirmButtonText: t(id ? 'confirm.updateButton' : 'confirm.createButton'),
-                icon: "question"
-            });
-
-            if (!isConfirmed) return;
-
             setLoading(true);
 
             if (id) {
                 updateData(`${PRODUCT_API}/${id}`, { updatedAt: crypto.randomUUID(), ...values })
                     .then(() => {
-                        showToast("success", t('updateSuccess'));
+                        showToast("success", 'Product updated successfully');
                         navigate(ADMIN_ROUTE.PRODUCT_LIST);
                         formik.resetForm();
                     })
@@ -48,7 +39,7 @@ function ProductForm(props) {
                     ...values
                 })
                     .then(() => {
-                        showToast("success", t('createSuccess'));
+                        showToast("success", 'Product listed successfully.');
                         navigate(ADMIN_ROUTE.PRODUCT_LIST);
                         formik.resetForm();
                     })
@@ -70,54 +61,52 @@ function ProductForm(props) {
         getProduct(id);
     }, []);
 
-    if (loading) return <h1 className='my-5 text-center text-success'>{t('loadingProduct')}</h1>;
+    if (loading) return <h1 className='my-5 text-center text-success'>Loading product</h1>;
 
     return (
-        <main className="product-form-page">
-            <div className="product-form-page__heading">
-                <div>
-                    <span className="eyebrow">{t('management')}</span>
-                    <h1>{id ? t('update') : t('create')}</h1>
-                    <p>{id ? t('updateDescription') : t('createDescription')}</p>
-                </div>
-                <span className="product-form-page__mode">{id ? t('editing') : t('newListing')}</span>
-            </div>
-            <div className="product-form-layout">
-                <form className="product-form" onSubmit={formik.handleSubmit}>
+        <main className="admin-form-page">
+            <AdminFormHeader
+                eyebrow="Catalog management"
+                title={id ? 'Refine a product' : 'Add a product'}
+                description={id ? 'Keep the catalog details accurate and useful.' : 'Give your next catalog item a clear, considered home.'}
+                mode={id ? 'Editing' : 'New listing'}
+            />
+            <div className="admin-form-layout">
+                <form className="admin-form" onSubmit={formik.handleSubmit}>
                     <div className="product-form__section">
-                        <span className="product-form__kicker">{t('basics')}</span>
-                        <h2>{t('basicsTitle')}</h2>
+                        <span className="product-form__kicker">01 / Basics</span>
+                        <h2>What are you offering?</h2>
                         <div className="mb-3">
-                            <Input name="title" type='text' label={t('titleLabel')} placeholder={t('titlePlaceholder')} formik={formik} />
+                            <Input name="title" type='text' label="Product title" placeholder="e.g. Daily ritual cleanser" formik={formik} />
                         </div>
                     </div>
                     <div className="product-form__section">
-                        <span className="product-form__kicker">{t('inventory')}</span>
-                        <h2>{t('inventoryTitle')}</h2>
+                        <span className="product-form__kicker">02 / Inventory</span>
+                        <h2>Keep the numbers clear.</h2>
                         <div className="row g-3">
-                            <div className="col-sm-6"><Input name="stock" type='number' step="1" label={t('stockLabel')} placeholder='0' formik={formik} /></div>
-                            <div className="col-sm-6"><Input name="price" type='number' step="0.01" label={t('priceLabel')} placeholder='0.00' formik={formik} /></div>
+                            <div className="col-sm-6"><Input name="stock" type='number' step="1" label="Stock quantity" placeholder='0' formik={formik} /></div>
+                            <div className="col-sm-6"><Input name="price" type='number' step="0.01" label="Price (₹)" placeholder='0.00' formik={formik} /></div>
                         </div>
                     </div>
                     <div className="product-form__section">
-                        <span className="product-form__kicker">{t('presentation')}</span>
-                        <h2>{t('presentationTitle')}</h2>
-                        <Input name="thumbnail" type='url' label={t('imageLabel')} placeholder={t('imagePlaceholder')} formik={formik} />
+                        <span className="product-form__kicker">03 / Presentation</span>
+                        <h2>Give it a strong first impression.</h2>
+                        <Input name="thumbnail" type='url' label="Product image URL" placeholder="https://..." formik={formik} />
                     </div>
                     <div className="product-form__actions">
-                        <button className='btn btn-primary' type='submit'>{id ? t('productUpdateButton') : t('productCreateButton')}</button>
+                        <AdminButton type="submit">{id ? 'Update product' : 'Create product'}</AdminButton>
                     </div>
                 </form>
                 <aside className="product-form__preview">
-                    <span className="eyebrow">{t('preview')}</span>
+                    <span className="eyebrow">Live preview</span>
                     <div className="product-form__preview-image-wrap">
-                        <img src={formik.values.thumbnail} alt={t('productPreview')} className="product-form__preview-image" />
+                        <img src={formik.values.thumbnail} alt="Product preview" className="product-form__preview-image" />
                     </div>
-                    <span className="product-card__category">{t('productCategory')}</span>
-                    <h3>{formik.values.title || t('previewTitle')}</h3>
+                    <span className="product-card__category">Featured product</span>
+                    <h3>{formik.values.title || 'Your product title'}</h3>
                     <div className="product-form__preview-meta">
                         <strong>₹{Number(formik.values.price || 0).toLocaleString("en-IN")}</strong>
-                        <span>{formik.values.stock || 0} {t('inStock')}</span>
+                        <span>{formik.values.stock || 0} in stock</span>
                     </div>
                 </aside>
             </div>

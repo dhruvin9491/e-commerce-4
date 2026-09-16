@@ -1,158 +1,109 @@
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
-import { PRODUCT_FORM_INIT_DATA, REVIEW_FORM_INIT_DATA } from '../../../utils/InitFormData';
-import { PRODUCT_YUP_SCHEMA, REVIEW_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
+import React, { useEffect } from 'react';
+import { REVIEW_FORM_INIT_DATA } from '../../../utils/InitFormData';
+import { REVIEW_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
 import { useNavigate, useParams } from 'react-router-dom';
 import Input from '../../../components/common/Input';
+import AdminFormHeader from '../../../components/admin/AdminFormHeader';
+import RatingInput from '../../../components/admin/RatingInput';
+import AdminButton from '../../../components/admin/AdminButton';
 import { GenerateMetaData } from '../../../helper/DataGenrateHelper';
-import { createData, getData, updateData } from '../../../helper/ApiHelper';
-import { PRODUCT_API } from '../../../constants/ApiConstant';
-import { confirmAction, showToast } from '../../../helper/UiHelper';
-import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../../helper/AuthHelper';
-import { ROLES } from '../../../constants/CommonConstant';
-import { useDispatch } from 'react-redux';
-import { createReview } from '../../../redux/actions/reviewActions';
+import { useDispatch, useSelector } from 'react-redux';
+import { createReview, verifyProduct } from '../../../redux/actions/reviewActions';
 
-function ReviewForm(props) {
-    // const [loading, setLoading] = useState(false);
+function ReviewForm() {
     const navigate = useNavigate();
-    const { id } = useParams();
-    const { t } = useTranslation();
     const { user } = useAuth();
     const dispatch = useDispatch();
+    const { pid } = useParams();
+    const productVerification = useSelector((state) => state.productVerification);
 
     const formik = useFormik({
         initialValues: REVIEW_FORM_INIT_DATA,
-        validationSchema: REVIEW_YUP_SCHEMA,
-        onSubmit: async (values) => {
+        validationSchema: () => REVIEW_YUP_SCHEMA(productVerification),
+        onSubmit: (values) => {
+            const productId = values.pid?.trim();
+
             dispatch(createReview({
                 ...GenerateMetaData(),
                 isActive: false,
                 role: user.role,
-                ...values
+                ...values,
+                pid: productId
             }));
 
             navigate(ADMIN_ROUTE.REVIEW_LIST);
-
-
-            // const isConfirmed = await confirmAction({
-            //     title: t(id ? 'confirm.updateTitle' : 'confirm.createTitle'),
-            //     text: t(id ? 'confirm.updateText' : 'confirm.createText'),
-            //     confirmButtonText: t(id ? 'confirm.updateButton' : 'confirm.createButton'),
-            //     icon: "question"
-            // });
-
-            // if (!isConfirmed) return;
-
-            // setLoading(true);
-
-            // if (id) {
-            //     updateData(`${PRODUCT_API}/${id}`, { updatedAt: crypto.randomUUID(), ...values })
-            //         .then(() => {
-            //             showToast("success", t('updateSuccess'));
-            //             navigate(ADMIN_ROUTE.PRODUCT_LIST);
-            //             formik.resetForm();
-            //         })
-            //         .catch((error) => showToast("error", error.message))
-            //         .finally(() => setLoading(false));
-            // } else {
-            //     createData(PRODUCT_API, {
-            //         ...GenerateMetaData(),
-            //         isActive: false,
-            //         ...values
-            //     })
-            //         .then(() => {
-            //             showToast("success", t('createSuccess'));
-            //             navigate(ADMIN_ROUTE.PRODUCT_LIST);
-            //             formik.resetForm();
-            //         })
-            //         .catch((error) => showToast("error", error.message))
-            //         .finally(() => setLoading(false));
-            // }
         }
     });
 
     useEffect(() => {
-        if (user.role === ROLES.ADMIN) return;
+        if (!pid) return;
 
-        formik.setValues({
-            firstname: user.name,
-            lastname: user.name
-        })
+        formik.setFieldValue("pid", pid);
+        dispatch(verifyProduct(pid));
     }, []);
 
-    // const getProduct = async (id) => {
-    //     getData(`${PRODUCT_API}/${id}`)
-    //         .then((res) => formik.setValues(res.data))
-    //         .catch((error) => showToast("error", error.message))
-    //         .finally(() => setLoading(false));
-    // }
+    useEffect(() => {
+        const productId = formik.values.pid?.trim() || '';
+        if (productVerification.id && productVerification.id !== productId) {
+            dispatch(verifyProduct(''));
+        }
+    }, [formik.values.pid, productVerification.id, dispatch]);
 
-    // useEffect(() => {
-    //     if (!id) return;
-    //     getProduct(id);
-    // }, []);
-
-    // if (loading) return <h1 className='my-5 text-center text-success'>{t('loadingProduct')}</h1>;
+    useEffect(() => {
+        formik.validateField('pid');
+    }, [productVerification.status, productVerification.id]);
 
     return (
-        <main className="product-form-page">
-            <div className="product-form-page__heading">
-                <div>
-                    <span className="eyebrow">{t('Review Managemenet')}</span>
-                    <h1>{id ? t('Edit a Review') : t('Create a Review')}</h1>
-                    <p>{id ? t('updateDescription') : t('createDescription')}</p>
-                </div>
-                <span className="product-form-page__mode">{id ? t('editing') : t('newListing')}</span>
-            </div>
-            <div className="product-form-layout">
-                <form onSubmit={formik.handleSubmit}>
-                    <Input name="firstname" type='text' placeholder={t('First Name')} formik={formik} />
-                    <Input name="lastname" type='text' placeholder={t('Last Name')} formik={formik} />
-                    <Input name="review" type='text' placeholder={t('Your Feedback')} formik={formik} />
-                    <Input name="ratting" type='number' placeholder={t('Ratting')} formik={formik} />
-                    <Input name="pid" type='text' placeholder={t('Product ID')} formik={formik} />
-                    <button type='submit'>Add</button>
-                </form>
-                {/* <form className="product-form" onSubmit={formik.handleSubmit}>
-                    <div className="product-form__section">
-                        <span className="product-form__kicker">{t('basics')}</span>
-                        <h2>{t('basicsTitle')}</h2>
-                        <div className="mb-3">
-                            <Input name="title" type='text' label={t('titleLabel')} placeholder={t('titlePlaceholder')} formik={formik} />
+        <main className="admin-form-page">
+            <AdminFormHeader eyebrow="Review management" title="Add a review" description="Capture customer feedback for a product." mode="New review" />
+            <div className="admin-form-layout">
+                <form className="admin-form" onSubmit={formik.handleSubmit}>
+                    <div className="admin-form__section">
+                        <div className='row'>
+                            <div className="col-6 mb-3">
+                                <Input name="firstname" type="text" label="First name" placeholder="First name" formik={formik} />
+                            </div>
+                            <div className="col-6 mb-3">
+                                <Input name="lastname" type="text" label="Last name" placeholder="Last name" formik={formik} />
+                            </div>
+                            <div className="col-12 mb-3">
+                                <Input name="review" textarea label="Review" placeholder="Share feedback..." formik={formik} />
+                            </div>
+                            <div className='col-4'>
+                                <RatingInput value={formik.values.ratting} onChange={(rating) => formik.setFieldValue('ratting', rating)} error={formik.touched.ratting && formik.errors.ratting} />
+                            </div>
+                            <div className="col-8 mb-3">
+                                <label className="form-label" htmlFor="pid">Product ID</label>
+                                <div className="product-id-verification">
+                                    <div className="product-id-verification__input">
+                                        <Input name="pid" type="text" placeholder="Product ID" formik={formik} />
+                                    </div>
+                                    <AdminButton
+                                        type="button"
+                                        variant="outline-secondary"
+                                        onClick={() => {
+                                            formik.setFieldTouched('pid', true, true);
+                                            if (!formik.values.pid?.trim()) {
+                                                dispatch(verifyProduct(''));
+                                                return;
+                                            }
+                                            dispatch(verifyProduct(formik.values.pid));
+                                        }}
+                                        disabled={productVerification.status === 'checking' || !formik.values.pid?.trim()}
+                                    >
+                                        {productVerification.status === 'checking' ? 'Verifying...' : 'Verify product ID'}
+                                    </AdminButton>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div className="product-form__section">
-                        <span className="product-form__kicker">{t('inventory')}</span>
-                        <h2>{t('inventoryTitle')}</h2>
-                        <div className="row g-3">
-                            <div className="col-sm-6"><Input name="stock" type='number' step="1" label={t('stockLabel')} placeholder='0' formik={formik} /></div>
-                            <div className="col-sm-6"><Input name="price" type='number' step="0.01" label={t('priceLabel')} placeholder='0.00' formik={formik} /></div>
-                        </div>
-                    </div>
-                    <div className="product-form__section">
-                        <span className="product-form__kicker">{t('presentation')}</span>
-                        <h2>{t('presentationTitle')}</h2>
-                        <Input name="thumbnail" type='url' label={t('imageLabel')} placeholder={t('imagePlaceholder')} formik={formik} />
-                    </div>
-                    <div className="product-form__actions">
-                        <button className='btn btn-primary' type='submit'>{id ? t('productUpdateButton') : t('productCreateButton')}</button>
+                    <div className="admin-form__actions text-end">
+                        <AdminButton type="submit">Add review</AdminButton>
                     </div>
                 </form>
-                <aside className="product-form__preview">
-                    <span className="eyebrow">{t('preview')}</span>
-                    <div className="product-form__preview-image-wrap">
-                        <img src={formik.values.thumbnail} alt={t('productPreview')} className="product-form__preview-image" />
-                    </div>
-                    <span className="product-card__category">{t('productCategory')}</span>
-                    <h3>{formik.values.title || t('previewTitle')}</h3>
-                    <div className="product-form__preview-meta">
-                        <strong>₹{Number(formik.values.price || 0).toLocaleString("en-IN")}</strong>
-                        <span>{formik.values.stock || 0} {t('inStock')}</span>
-                    </div>
-                </aside> */}
             </div>
         </main >
     );

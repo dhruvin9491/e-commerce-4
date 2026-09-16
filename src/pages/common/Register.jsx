@@ -10,17 +10,16 @@ import { GenerateMetaData } from '../../helper/DataGenrateHelper';
 import { createData, getData } from '../../helper/ApiHelper';
 import { USER_API } from '../../constants/ApiConstant';
 import { showToast } from '../../helper/UiHelper';
-import { useTranslation } from 'react-i18next';
 
 function Register() {
     const navigate = useNavigate();
-    const { t } = useTranslation();
     const formik = useFormik({
         initialValues: REGISTER_FORM_INIT_DATA,
         validationSchema: REGISTER_YUP_SCHEMA,
         onSubmit: async (values) => {
             const newUser = {
                 ...values,
+                name: `${values.firstname} ${values.lastname}`,
                 role: ROLES.USER,
                 ...GenerateMetaData()
             };
@@ -29,11 +28,11 @@ function Register() {
                 const { data } = await getData(`${USER_API}?email=${encodeURIComponent(values.email)}`);
 
                 if (data.length) {
-                    return showToast('error', t('duplicateAccount'));
+                    return showToast('error', 'An account with this email already exists');
                 }
 
                 await createData(USER_API, newUser);
-                showToast('success', t('registrationSuccess'));
+                showToast('success', 'Registration successful');
                 navigate(AUTH_ROUTE.LOGIN);
             } catch (error) {
                 showToast('error', error.message);
@@ -46,24 +45,28 @@ function Register() {
             <section className="auth-panel">
                 <form onSubmit={formik.handleSubmit}>
                     <div className="mb-3">
-                        <Input name="name" type="text" placeholder={t('name')} formik={formik} />
+                        <Input name="firstname" type="text" placeholder="First name" formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="email" type="email" placeholder={t('email')} formik={formik} />
+                        <Input name="lastname" type="text" placeholder="Last name" formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="password" type="password" placeholder={t('password')} formik={formik} />
+                        <Input name="email" type="email" placeholder="Email" formik={formik} />
+                    </div>
+
+                    <div className="mb-3">
+                        <Input name="password" type="password" placeholder="Password" formik={formik} />
                     </div>
 
                     <button className="btn btn-primary btn-block" type="submit">
-                        {t('register')}
+                        Register
                     </button>
 
                     <p className="my-3 text-center">
-                        {t('haveAccount')}
-                        <Link to={AUTH_ROUTE.LOGIN}> {t('signin')}</Link>
+                        Have an account?
+                        <Link to={AUTH_ROUTE.LOGIN}> Sign in</Link>
                     </p>
                 </form>
             </section>

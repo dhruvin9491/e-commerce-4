@@ -8,14 +8,12 @@ import { PageState } from "../../components/common/PageState";
 import { PRODUCT_API } from "../../constants/ApiConstant";
 import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
 import { getData } from "../../helper/ApiHelper";
-import { useTranslation } from 'react-i18next';
 
 function StoreProductDetail() {
     const { id } = useParams();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const { t } = useTranslation();
 
     useEffect(() => {
         getData(`${PRODUCT_API}/${id}`)
@@ -27,23 +25,23 @@ function StoreProductDetail() {
     return <>
         <Header />
         <main className="product-detail">
-            {loading && <Loader label={t('storeLoading')} />}
-            {!loading && error && <PageState title={t('unavailable')} message={error} action={<Link className="button button--dark" to={CLIENT_ROUTE.STORE}>{t('storeBack')}</Link>} />}
+            {loading && <Loader label="Loading products" />}
+            {!loading && error && <PageState title="Product unavailable" message={error} action={<Link className="button button--dark" to={CLIENT_ROUTE.STORE}>Back to store</Link>} />}
             {!loading && !error && product && (
                 <section className="product-detail__layout">
                     <div className="product-detail__image-wrap">
                         <img src={product.thumbnail} alt={product.title} className="product-detail__image" />
                     </div>
                     <div className="product-detail__content">
-                        <span className="eyebrow">{t('storeCategory')}</span>
+                        <span className="eyebrow">Shoplane collection</span>
                         <h1>{product.title}</h1>
                         <p className="product-detail__price">₹{Number(product.price || 0).toLocaleString("en-IN")}</p>
-                        <p className="product-detail__description">{t('storeDescription')}</p>
+                        <p className="product-detail__description">A considered everyday essential, selected for its simple utility and easy place in your routine.</p>
                         <div className="product-detail__facts">
-                            <div><span>{t('availability')}</span><strong>{product.stock > 0 ? t('inStock') : t('outOfStock')}</strong></div>
-                            <div><span>{t('quantity')}</span><strong>{product.stock || 0}</strong></div>
+                            <div><span>Availability</span><strong>{product.stock > 0 ? 'In stock' : 'Out of stock'}</strong></div>
+                            <div><span>Quantity available</span><strong>{product.stock || 0}</strong></div>
                         </div>
-                        <Link className="button button--dark" to={CLIENT_ROUTE.STORE}>{t('continue')} <span aria-hidden="true">→</span></Link>
+                        <Link className="button button--dark" to={CLIENT_ROUTE.STORE}>Continue browsing <span aria-hidden="true">→</span></Link>
                     </div>
                 </section>
             )}

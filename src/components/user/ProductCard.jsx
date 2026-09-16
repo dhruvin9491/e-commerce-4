@@ -1,17 +1,15 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
-import { useTranslation } from 'react-i18next';
 
 function ProductCard({ product }) {
-    const { t } = useTranslation();
     return <article className={`product-card ${product.isDeleted ? "product-card--muted" : ""}`}>
         <div className="product-card__image-wrap">
             <img src={product.thumbnail} alt={product.title} className="product-card__image" />
-            {!product.isDeleted && product.stock < 10 && <span className="status-pill status-pill--low">{t('lowStock')}</span>}
+            {!product.isDeleted && product.stock < 10 && <span className="status-pill status-pill--low">Low stock</span>}
         </div>
         <div className="product-card__body">
-            <span className="product-card__category">{t('featuredProduct')}</span>
+            <span className="product-card__category">Featured product</span>
             <h3>{product.title}</h3>
             <div className="product-card__footer">
                 <strong>₹{Number(product.price || 0).toLocaleString("en-IN")}</strong>
