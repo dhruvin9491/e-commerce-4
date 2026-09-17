@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AUTH_ROUTE } from "../../constants/RoutesConstant";
 import { useAuth } from "../../helper/AuthHelper";
+import LogoutOutlinedIcon from '@mui/icons-material/LogoutOutlined';
 
 function Topbar() {
     const navigate = useNavigate();
@@ -10,9 +11,15 @@ function Topbar() {
         logout();
         navigate(AUTH_ROUTE.LOGIN, { replace: true });
     };
-    return <header className="bg-white border-bottom px-4 py-3 d-flex justify-content-between align-items-center">
-        <span className="text-muted">Signed in as <strong className="text-dark">{user?.name}</strong></span>
-        <button type="button" className="btn btn-outline-secondary btn-sm" onClick={handleLogout}>Sign out</button>
+    return <header className="bg-white border-bottom d-flex justify-content-between align-items-center px-4 py-3">
+        <div>
+            <span className="eyebrow">Admin workspace</span>
+            <strong className="d-block small mt-1">Good to see you, {user?.name || 'Admin'}</strong>
+        </div>
+        <button type="button" className="btn btn-outline-secondary btn-sm d-inline-flex align-items-center gap-2" onClick={handleLogout}>
+            <LogoutOutlinedIcon fontSize="small" />
+            <span>Sign out</span>
+        </button>
     </header>;
 }
 

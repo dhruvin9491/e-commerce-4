@@ -17,8 +17,19 @@ const reviewReducer = (state = initialValue, action) => {
                 ...state,
                 reviews: [...state.reviews, action.payload]
             }
+        case REVIEW_ACTION.UPDATE:
+        case REVIEW_ACTION.VISIBILITY_UPDATED:
+        case REVIEW_ACTION.STATUS_UPDATED:
+            return {
+                ...state,
+                reviews: state.reviews.map((review) =>
+                    review.id === action.payload.id ? action.payload : review
+                )
+            };
+
         case REVIEW_ACTION.GET_ALL:
             return state;
+
         case REVIEW_ACTION.VERIFY_PRODUCT:
             if (
                 ['verified', 'not-found'].includes(action.payload.status) &&
@@ -30,6 +41,7 @@ const reviewReducer = (state = initialValue, action) => {
                 ...state,
                 productVerification: action.payload
             };
+
         default:
             return state;
     }

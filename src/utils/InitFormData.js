@@ -6,8 +6,8 @@ export const REGISTER_FORM_INIT_DATA = {
 }
 
 export const LOGIN_FORM_INIT_DATA = {
-    email: "",
-    password: null
+    email: "admin@gmail.com",
+    password: "admin@123"
 }
 
 export const PRODUCT_FORM_INIT_DATA = {
@@ -18,9 +18,9 @@ export const PRODUCT_FORM_INIT_DATA = {
 }
 
 export const REVIEW_FORM_INIT_DATA = {
-    firstname: "",
-    lastname: "",
-    review: "",
-    ratting: 2,
-    pid: null,
+    firstname: "Jhon",
+    lastname: "Deo",
+    review: "This is the best product",
+    ratting: 3,
+    pid: "AnIYQgbGss4",
 }

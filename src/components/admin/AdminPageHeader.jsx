@@ -4,7 +4,7 @@ function AdminPageHeader({ eyebrow, title, description, count, action }) {
     return (
         <div className="admin-list-page__heading">
             <div>
-                <p className="text-uppercase text-primary small mb-1">{eyebrow}</p>
+                <p className="eyebrow mb-1">{eyebrow}</p>
                 <h1 className="h2 mb-0">
                     {title}
                     {count !== undefined && <span className="admin-list-count">{count} shown</span>}
