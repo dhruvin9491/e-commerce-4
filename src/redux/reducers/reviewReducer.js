@@ -1,7 +1,7 @@
 import { REVIEW_ACTION } from "../../constants/ActionConstant";
 
 const initialValue = {
-    reviews: [],
+    reviews: JSON.parse(localStorage.getItem("_review") || "[]"),
     productVerification: {
         status: 'idle',
         id: '',
@@ -13,19 +13,28 @@ const initialValue = {
 const reviewReducer = (state = initialValue, action) => {
     switch (action.type) {
         case REVIEW_ACTION.CREATE:
-            return {
+            const createdReviews = {
                 ...state,
                 reviews: [...state.reviews, action.payload]
             }
+
+            localStorage.setItem("_review", JSON.stringify(createdReviews.reviews));
+
+            return createdReviews;
+            
         case REVIEW_ACTION.UPDATE:
         case REVIEW_ACTION.VISIBILITY_UPDATED:
         case REVIEW_ACTION.STATUS_UPDATED:
-            return {
+            const updatedReview = {
                 ...state,
                 reviews: state.reviews.map((review) =>
                     review.id === action.payload.id ? action.payload : review
                 )
             };
+
+            localStorage.setItem("_review", JSON.stringify(updatedReview.reviews));
+
+            return updatedReview;
 
         case REVIEW_ACTION.GET_ALL:
             return state;

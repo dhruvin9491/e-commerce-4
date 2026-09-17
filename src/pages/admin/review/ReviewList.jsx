@@ -13,6 +13,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Tooltip } from '@mui/material';
+import { ROLES } from '../../../constants/CommonConstant';
 
 function ReviewList() {
     const navigate = useNavigate();
@@ -88,9 +89,12 @@ function ReviewList() {
                                             <Tooltip title={r.isActive ? 'Hide review' : 'Show review'}>
                                                 <span><IconButton size="small" onClick={() => dispatch(toggleReviewVisibility(r))} disabled={r.isDeleted} aria-label={r.isActive ? 'Hide review' : 'Show review'}>{r.isActive ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}</IconButton></span>
                                             </Tooltip>
-                                            <Tooltip title="Edit Review">
-                                                <span><IconButton size="small" onClick={() => navigate(`${ADMIN_ROUTE.REVIEW_UPDATE}/${r.id}`)} disabled={r.isDeleted} aria-label="Edit review"><EditIcon fontSize="small" /></IconButton></span>
-                                            </Tooltip>
+                                            {
+                                                r.role === ROLES.ADMIN &&
+                                                <Tooltip title="Edit Review">
+                                                    <span><IconButton size="small" onClick={() => navigate(`${ADMIN_ROUTE.REVIEW_UPDATE}/${r.id}`)} disabled={r.isDeleted} aria-label="Edit review"><EditIcon fontSize="small" /></IconButton></span>
+                                                </Tooltip>
+                                            }
                                             <Tooltip title={r.isDeleted ? 'Restore review' : 'Delete review'}>
                                                 <IconButton onClick={() => dispatch(toggleReviewDeleted(r))} className="admin-table__icon--danger" size="small" aria-label={r.isDeleted ? 'Restore review' : 'Delete review'}>{r.isDeleted ? <RestoreFromTrashIcon fontSize="small" /> : <DeleteIcon fontSize="small" />}</IconButton>
                                             </Tooltip>
