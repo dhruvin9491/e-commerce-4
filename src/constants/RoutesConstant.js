@@ -8,6 +8,7 @@ export const CLIENT_ROUTE = {
     HOME: "/",
     PROFILE: "/profile",
     STORE: "/store",
+    ABOUT: "/about",
     PRODUCT: "/store/product"
 };
 

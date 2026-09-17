@@ -9,6 +9,7 @@ import { PRODUCT_API } from "../../constants/ApiConstant";
 import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
 import { getData } from "../../helper/ApiHelper";
 import { useSelector } from "react-redux";
+import ReviewSummary from "../../components/user/ReviewSummary";
 
 function StoreProductDetail() {
     const { id } = useParams();
@@ -25,6 +26,7 @@ function StoreProductDetail() {
     }, [id]);
 
     const filteredReviews = reviews.filter((r) => r.pid === id && r.isDeleted === false && r.isActive === true);
+    console.log(filteredReviews);
 
     return <>
         <Header />
@@ -41,6 +43,7 @@ function StoreProductDetail() {
                             <span className="eyebrow">Shoplane collection</span>
                             <h1>{product.title}</h1>
                             <p className="product-detail__price">₹{Number(product.price || 0).toLocaleString("en-IN")}</p>
+                            <ReviewSummary reviews={filteredReviews} />
                             <p className="product-detail__description">A considered everyday essential, selected for its simple utility and easy place in your routine.</p>
                             <div className="product-detail__facts">
                                 <div><span>Availability</span><strong>{product.stock > 0 ? 'In stock' : 'Out of stock'}</strong></div>
@@ -49,23 +52,28 @@ function StoreProductDetail() {
                             <Link className="button button--dark" to={CLIENT_ROUTE.STORE}>Continue browsing <span aria-hidden="true">→</span></Link>
                         </div>
                     </section>
-                    <section className="py-5">
-                        {
-                            filteredReviews && filteredReviews.length > 0 ?
-                                <div className="row">
-                                    {
-                                        filteredReviews.map((r) => (
-                                            <div className="col-6">
-                                                <p>{r.review}</p>
-                                                <h3>{r.firstname} {r.lastname}</h3>
-                                                <h1>{r.ratting}</h1>
-                                            </div>
-                                        ))
-                                    }
-                                </div>
-                                :
-                                <p>No Reviews for this product</p>
-                        }
+                    <section className="product-reviews">
+                        <div className="section-heading">
+                            <div>
+                                <span className="eyebrow">Customer notes</span>
+                                <h2>Reviews from the shelf.</h2>
+                            </div>
+                            <div className="product-reviews__actions">
+                                <ReviewSummary reviews={filteredReviews} />
+                                <button type="button" className="button button--dark">Add your review</button>
+                            </div>
+                        </div>
+                        {filteredReviews.length > 0 ? (
+                            <div className="product-reviews__grid">
+                                {filteredReviews.map((review) => (
+                                    <article className="product-review" key={review.id}>
+                                        <ReviewSummary reviews={[review]} compact />
+                                        <p>{review.review}</p>
+                                        <strong>{review.firstname} {review.lastname}</strong>
+                                    </article>
+                                ))}
+                            </div>
+                        ) : <p className="product-reviews__empty">No published reviews yet. Be the first to share your experience.</p>}
                     </section>
                 </>
             )}

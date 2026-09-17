@@ -299,6 +299,9 @@ a { color: inherit; }
 @media (max-width: 480px) { .store-nav { display: none; }.shop-hero h1 { font-size: 52px; }.section-heading h2 { font-size: 34px; }.product-grid { gap: 12px; }.product-card__image-wrap { height: 150px; }.product-card__body { padding: 12px; }.product-card h3 { font-size: 14px; min-height: 57px; }.product-card__footer { align-items: flex-start; flex-direction: column; gap: 5px; }.auth-panel { padding: 28px 22px; } }
 
 .product-card__link { border-top: 1px solid var(--line); color: var(--coral); display: flex; font-size: 12px; font-weight: 800; justify-content: space-between; margin-top: 15px; padding-top: 13px; text-decoration: none; }
+.review-summary { align-items: center; display: flex; flex-wrap: wrap; gap: 8px; margin: 18px 0; }.review-summary__stars { color: var(--coral); letter-spacing: 2px; }.review-summary strong { font-size: 14px; }.review-summary > span:last-child { color: var(--muted-ink); font-size: 12px; }.review-summary--compact { gap: 5px; margin: 0 0 14px; }.review-summary--compact .review-summary__stars { font-size: 13px; }.review-summary--compact strong, .review-summary--compact > span:last-child { font-size: 11px; }
+.product-reviews { border-top: 1px solid var(--line); margin-top: 100px; padding-top: 42px; }.product-reviews .section-heading { align-items: center; }.product-reviews h2 { font-family: var(--display); font-size: 38px; font-weight: 400; margin: 10px 0 0; }.product-reviews__actions { align-items: center; display: flex; gap: 20px; }.product-reviews__actions .review-summary { margin: 0; }.product-reviews__actions .button { margin-top: 0; }.product-reviews__grid { display: grid; gap: 18px; grid-template-columns: repeat(3, 1fr); }.product-review { background: var(--surface); border: 1px solid var(--line); padding: 22px; }.product-review p { color: var(--muted-ink); line-height: 1.65; min-height: 52px; }.product-review strong { font-size: 13px; }.product-reviews__empty, .home-error { color: var(--muted-ink); }
+.home-shelf { margin-top: 74px; }.home-shelf .section-heading { align-items: end; }.home-shelf .section-heading h2 { margin-bottom: 7px; }.home-shelf .section-heading p { color: var(--muted-ink); margin: 0; }.home-shelf .text-button { white-space: nowrap; }.home-shelf .product-grid { grid-template-columns: repeat(4, 1fr); }
 .product-card__link:hover { color: var(--ink); }
 .status-pill--low { background: var(--ink); }
 .store-toolbar { align-items: end; gap: 30px; }
@@ -395,6 +398,10 @@ a { color: inherit; }
   .product-detail__layout, .admin-form-layout { grid-template-columns: 1fr; }
   .product-detail { padding: 50px 18px 80px; }
   .product-detail__image-wrap { min-height: 340px; }
+  .product-reviews__grid { grid-template-columns: repeat(2, 1fr); }
+  .home-shelf .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .home-shelf .section-heading, .product-reviews .section-heading { align-items: start; flex-direction: column; gap: 18px; }
+  .product-reviews__actions { align-items: flex-start; flex-direction: column; gap: 4px; }
   .admin-form-page, .admin-list-page { padding: 38px 18px 70px; }
   .product-form__preview { position: static; }
 }

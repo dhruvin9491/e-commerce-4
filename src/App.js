@@ -21,6 +21,7 @@ import { ROLES } from './constants/CommonConstant';
 import LangProvider from './context/LangContext';
 import StoreProductList from './pages/user/StoreProductList';
 import StoreProductDetail from './pages/user/StoreProductDetail';
+import StoreAbout from './pages/user/StoreAbout';
 
 function App() {
     return (
@@ -34,6 +35,7 @@ function App() {
                     <Route element={<PrivateRoute roles={[ROLES.ADMIN, ROLES.USER]} />}>
                         <Route path={CLIENT_ROUTE.HOME} element={<StoreHome />} />
                         <Route path={CLIENT_ROUTE.PROFILE} element={<StoreProfile />} />
+                        <Route path={CLIENT_ROUTE.ABOUT} element={<StoreAbout />} />
                         <Route path={CLIENT_ROUTE.STORE} element={<StoreProductList />} />
                         <Route path={`${CLIENT_ROUTE.PRODUCT}/:id`} element={<StoreProductDetail />} />
                     </Route>

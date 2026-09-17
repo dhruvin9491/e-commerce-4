@@ -1,7 +1,7 @@
 import { REVIEW_ACTION } from "../../constants/ActionConstant";
 
 const initialValue = {
-    reviews: JSON.parse(localStorage.getItem("_review") || "[]"),
+    reviews: JSON.parse(localStorage.getItem("reviews") || "[]"),
     productVerification: {
         status: 'idle',
         id: '',
@@ -18,7 +18,7 @@ const reviewReducer = (state = initialValue, action) => {
                 reviews: [...state.reviews, action.payload]
             }
 
-            localStorage.setItem("_review", JSON.stringify(createdReviews.reviews));
+            localStorage.setItem("reviews", JSON.stringify(createdReviews.reviews));
 
             return createdReviews;
             
@@ -32,7 +32,7 @@ const reviewReducer = (state = initialValue, action) => {
                 )
             };
 
-            localStorage.setItem("_review", JSON.stringify(updatedReview.reviews));
+            localStorage.setItem("reviews", JSON.stringify(updatedReview.reviews));
 
             return updatedReview;
 

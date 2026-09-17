@@ -29,8 +29,9 @@ function Header() {
 
                 <nav className="store-nav">
                     <Link to={CLIENT_ROUTE.HOME}>Home</Link>
-                    <Link to={CLIENT_ROUTE.PROFILE}>Profile</Link>
+                     <Link to={CLIENT_ROUTE.ABOUT}>About</Link>
                     <Link to={CLIENT_ROUTE.STORE}>Store</Link>
+                    <Link to={CLIENT_ROUTE.PROFILE}>Profile</Link>
                 </nav>
 
                 <div className="store-header__actions">
