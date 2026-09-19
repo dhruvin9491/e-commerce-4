@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Header from "../../components/user/Header";
 import StoreFooter from "../../components/user/StoreFooter";
@@ -10,9 +10,11 @@ import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
 import { getData } from "../../helper/ApiHelper";
 import { useSelector } from "react-redux";
 import ReviewSummary from "../../components/user/ReviewSummary";
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
 
 function StoreProductDetail() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
     const { reviews } = useSelector((state) => state);
@@ -26,7 +28,6 @@ function StoreProductDetail() {
     }, [id]);
 
     const filteredReviews = reviews.filter((r) => r.pid === id && r.isDeleted === false && r.isActive === true);
-    console.log(filteredReviews);
 
     return <>
         <Header />
@@ -60,7 +61,7 @@ function StoreProductDetail() {
                             </div>
                             <div className="product-reviews__actions">
                                 <ReviewSummary reviews={filteredReviews} />
-                                <button type="button" className="button button--dark">Add your review</button>
+                                <button type="button" className="button button--dark" onClick={() => navigate(`${CLIENT_ROUTE.REVIEW}/${id}`)} ><RateReviewOutlinedIcon fontSize="small" aria-hidden="true" /> Add your review</button>
                             </div>
                         </div>
                         {filteredReviews.length > 0 ? (

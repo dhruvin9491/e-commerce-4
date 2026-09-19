@@ -12,8 +12,6 @@ export const updateReview = (review) => ({
     payload: { ...review, updatedAt: new Date().toISOString() }
 });
 
-export const getReviews = () => ({ type: REVIEW_ACTION.GET_ALL });
-
 export const toggleReviewVisibility = (review) => ({
     type: REVIEW_ACTION.VISIBILITY_UPDATED,
     payload: {

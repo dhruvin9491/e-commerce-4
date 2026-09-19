@@ -22,6 +22,7 @@ import LangProvider from './context/LangContext';
 import StoreProductList from './pages/user/StoreProductList';
 import StoreProductDetail from './pages/user/StoreProductDetail';
 import StoreAbout from './pages/user/StoreAbout';
+import StoreReviewForm from './pages/user/StoreReviewForm';
 
 function App() {
     return (
@@ -38,6 +39,7 @@ function App() {
                         <Route path={CLIENT_ROUTE.ABOUT} element={<StoreAbout />} />
                         <Route path={CLIENT_ROUTE.STORE} element={<StoreProductList />} />
                         <Route path={`${CLIENT_ROUTE.PRODUCT}/:id`} element={<StoreProductDetail />} />
+                        <Route path={`${CLIENT_ROUTE.REVIEW}/:pid`} element={<StoreReviewForm />} />
                     </Route>
 
                     <Route element={<PrivateRoute roles={[ROLES.ADMIN]} />}>

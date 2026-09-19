@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
-import { getReviews, toggleReviewDeleted, toggleReviewVisibility } from '../../../redux/actions/reviewActions';
+import { toggleReviewDeleted, toggleReviewVisibility } from '../../../redux/actions/reviewActions';
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import AdminButton from '../../../components/admin/AdminButton';
@@ -14,6 +14,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Tooltip } from '@mui/material';
 import { ROLES } from '../../../constants/CommonConstant';
+import AddIcon from '@mui/icons-material/Add';
 
 function ReviewList() {
     const navigate = useNavigate();
@@ -27,10 +28,6 @@ function ReviewList() {
         ? new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
         : 'No date';
 
-    useEffect(() => {
-        dispatch(getReviews());
-    }, [dispatch]);
-
     const filteredReviews = reviews.filter((review) => {
         const searchText = search.toLowerCase();
         const matchesSearch = [review.firstname, review.lastname, review.review, review.pid]
@@ -43,7 +40,7 @@ function ReviewList() {
 
     return (
         <main className='admin-list-page'>
-            <AdminPageHeader eyebrow="Feedback" title="Reviews" count={filteredReviews.length} action={(
+            <AdminPageHeader eyebrow="Feedback" title="Reviews" description="Moderate customer feedback before it appears in the store." count={filteredReviews.length} action={(
                 <AdminToolbar
                     search={search}
                     onSearch={setSearch}
@@ -53,7 +50,7 @@ function ReviewList() {
                 >
                     <label className="admin-date-filter">From <input className='form-control' type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} /></label>
                     <label className="admin-date-filter">To <input className='form-control' type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} /></label>
-                    <AdminButton onClick={() => navigate(ADMIN_ROUTE.REVIEW_CREATE)}>Add review</AdminButton>
+                    <AdminButton onClick={() => navigate(ADMIN_ROUTE.REVIEW_CREATE)}><AddIcon fontSize="small" /> Add review</AdminButton>
                 </AdminToolbar>
             )} />
             <div className="admin-table-wrap">
@@ -72,7 +69,7 @@ function ReviewList() {
                                 </td>
                                 <td>
                                     <strong>{r.firstname} {r.lastname}</strong>
-                                    <small>{r.role || 'Customer'}</small>
+                                    <small>{r.role || 'Customer'} · <span className={`status-badge ${r.isDeleted ? 'status-badge--inactive' : r.isActive ? 'status-badge--active' : 'status-badge--pending'}`}>{r.isDeleted ? 'Archived' : r.isActive ? 'Published' : 'Pending'}</span></small>
                                 </td>
                                 <td className="review-table__feedback" title={r.review}>{r.review || 'No feedback provided'}</td>
                                 <td><span className="badge bg-light text-dark text-capitalize">{r.role || 'Customer'}</span></td>

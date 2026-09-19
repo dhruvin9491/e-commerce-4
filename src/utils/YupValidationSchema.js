@@ -22,11 +22,14 @@ export const PRODUCT_YUP_SCHEMA = Yup.object({
     ).required(),
 })
 
-export const REVIEW_YUP_SCHEMA = (productVerification = {}) => Yup.object({
+export const REVIEW_FIELDS_YUP_SCHEMA = Yup.object({
     firstname: Yup.string().min(2).max(16).required(),
     lastname: Yup.string().min(2).max(16).required(),
     review: Yup.string().min(10).max(100).required(),
     ratting: Yup.number().min(0).max(5).required(),
+});
+
+export const REVIEW_YUP_SCHEMA = (productVerification = {}) => REVIEW_FIELDS_YUP_SCHEMA.shape({
     pid: Yup.string()
         .trim()
         .required('Product ID is required')
@@ -42,4 +45,8 @@ export const REVIEW_YUP_SCHEMA = (productVerification = {}) => Yup.object({
             }
             return this.createError({ message: 'Verify the product ID before adding the review' });
         }),
+});
+
+export const REVIEW_CLIENT_YUP_SCHEMA = REVIEW_FIELDS_YUP_SCHEMA.shape({
+    pid: Yup.string().trim().required('Product is required'),
 });

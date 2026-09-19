@@ -15,6 +15,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import RateReviewIcon from '@mui/icons-material/RateReview';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
+import AddIcon from '@mui/icons-material/Add';
 
 function ProductList() {
     const [products, setProducts] = useState([]);
@@ -33,7 +34,7 @@ function ProductList() {
 
     const manageVisibility = async (id, visibility) => {
         setLoading(true);
-        updateData(`${PRODUCT_API}/${id}`, { updatedAt: crypto.randomUUID(), isActive: !visibility })
+        updateData(`${PRODUCT_API}/${id}`, { updatedAt: new Date().toISOString(), isActive: !visibility })
             .then(() => {
                 showToast("success", 'Product status updated');
                 getProduct()
@@ -70,11 +71,11 @@ function ProductList() {
 
     return (
         <main className='admin-list-page'>
-            <AdminPageHeader eyebrow="Catalog" title="Products" count={filteredProducts.length || 0} action={(
+            <AdminPageHeader eyebrow="Catalog" title="Products" description="Manage what customers can discover in your store." count={filteredProducts.length || 0} action={(
                 <AdminToolbar
                     search={search || ''}
                     onSearch={(value) => setSearch(value.toLowerCase())}
-                    placeholder="Search by title..."
+                    placeholder="Search products..."
                     hasFilters={Boolean(search || sortMode !== 'default')}
                     onReset={() => { setSearch(null); setSortMode('default'); }}
                 >
@@ -83,7 +84,7 @@ function ProductList() {
                         <option value="asce">Price: Low to High</option>
                         <option value="dsce">Price: High to Low</option>
                     </select>
-                    <AdminButton onClick={() => navigate(ADMIN_ROUTE.PRODUCT_CREATE)}>Add product</AdminButton>
+                    <AdminButton onClick={() => navigate(ADMIN_ROUTE.PRODUCT_CREATE)}><AddIcon fontSize="small" /> Add product</AdminButton>
                 </AdminToolbar>
             )} />
             <div className="admin-table-wrap">
@@ -94,14 +95,14 @@ function ProductList() {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredProducts.map((p) =>
+                    {filteredProducts.length ? filteredProducts.map((p) =>
                         <tr key={p.id} className={p.isDeleted ? "text-muted" : ""}>
                             <td className="fw-semibold">{p.id}</td>
                             <td><div className="admin-table__image-wrap">
                                 <img src={p.thumbnail} alt={p.title} className="admin-table__image" />
                             </div>
                             </td>
-                            <td><strong>{p.title}</strong><small>{p.isDeleted ? 'Archived' : p.isActive ? 'Visible in store' : 'Hidden from store'}</small></td>
+                            <td><strong>{p.title}</strong><small><span className={`status-badge ${p.isDeleted ? 'status-badge--inactive' : p.isActive ? 'status-badge--visible' : 'status-badge--hidden'}`}>{p.isDeleted ? 'Archived' : p.isActive ? 'Visible in store' : 'Hidden from store'}</span></small></td>
                             <td><span className="stock-badge">{p.stock} units</span></td>
                             <td><strong>₹{Number(p.price || 0).toLocaleString("en-IN")}</strong></td>
                             <td className="admin-table__actions">
@@ -128,7 +129,7 @@ function ProductList() {
                                 </div>
                             </td>
 
-                        </tr>)}
+                        </tr>) : <tr><td colSpan="6" className="review-table__empty">No products match the current filters.</td></tr>}
                 </tbody>
             </table>
             </div>

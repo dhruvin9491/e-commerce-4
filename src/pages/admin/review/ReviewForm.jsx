@@ -5,8 +5,8 @@ import { REVIEW_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
 import { useNavigate, useParams } from 'react-router-dom';
 import Input from '../../../components/common/Input';
+import ReviewFormFields from '../../../components/common/ReviewFormFields';
 import AdminFormHeader from '../../../components/admin/AdminFormHeader';
-import RatingInput from '../../../components/admin/RatingInput';
 import AdminButton from '../../../components/admin/AdminButton';
 import { GenerateMetaData } from '../../../helper/DataGenrateHelper';
 import { useAuth } from '../../../helper/AuthHelper';
@@ -34,7 +34,7 @@ function ReviewForm() {
                 ...values,
                 pid: productId,
                 role: selectedReview?.role || user.role,
-                isActive: selectedReview?.isActive || false,
+                isActive: selectedReview?.isActive ?? false,
             };
 
             dispatch(isEditMode ? updateReview(reviewData) : createReview({ ...reviewData, isActive: false }));
@@ -73,19 +73,8 @@ function ReviewForm() {
             <div className="admin-form-layout">
                 <form className="admin-form" onSubmit={formik.handleSubmit}>
                     <div className="admin-form__section">
-                        <div className='row'>
-                            <div className="col-6 mb-3">
-                                <Input name="firstname" type="text" label="First name" placeholder="First name" formik={formik} />
-                            </div>
-                            <div className="col-6 mb-3">
-                                <Input name="lastname" type="text" label="Last name" placeholder="Last name" formik={formik} />
-                            </div>
-                            <div className="col-12 mb-3">
-                                <Input name="review" textarea label="Review" placeholder="Share feedback..." formik={formik} />
-                            </div>
-                            <div className='col-4'>
-                                <RatingInput value={formik.values.ratting} onChange={(rating) => formik.setFieldValue('ratting', rating)} error={formik.touched.ratting && formik.errors.ratting} />
-                            </div>
+                        <ReviewFormFields formik={formik} />
+                        <div className="row">
                             <div className="col-8 mb-3">
                                 <label className="form-label" htmlFor="pid">Product ID</label>
                                 <div className="product-id-verification">

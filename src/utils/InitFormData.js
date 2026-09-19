@@ -18,9 +18,9 @@ export const PRODUCT_FORM_INIT_DATA = {
 }
 
 export const REVIEW_FORM_INIT_DATA = {
-    firstname: "Jhon",
-    lastname: "Deo",
-    review: "This is the best product",
-    ratting: 3,
-    pid: "AnIYQgbGss4",
+    firstname: "",
+    lastname: "",
+    review: "",
+    ratting: 0,
+    pid: "",
 }

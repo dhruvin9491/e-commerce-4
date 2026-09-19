@@ -36,9 +36,6 @@ const reviewReducer = (state = initialValue, action) => {
 
             return updatedReview;
 
-        case REVIEW_ACTION.GET_ALL:
-            return state;
-
         case REVIEW_ACTION.VERIFY_PRODUCT:
             if (
                 ['verified', 'not-found'].includes(action.payload.status) &&

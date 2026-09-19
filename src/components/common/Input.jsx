@@ -1,7 +1,7 @@
 import React from 'react';
 import { getInputClass } from '../../helper/UiHelper';
 
-function Input({ name, type, placeholder, formik, label, step, textarea }) {
+function Input({ name, type, placeholder, formik, label, step, textarea, mkDisabled }) {
     const fieldProps = {
         id: name,
         name,
@@ -9,7 +9,8 @@ function Input({ name, type, placeholder, formik, label, step, textarea }) {
         className: getInputClass(formik, name),
         onChange: formik.handleChange,
         onBlur: formik.handleBlur,
-        value: formik.values[name] ?? ''
+        value: formik.values[name] ?? '',
+        disabled: mkDisabled || false
     };
 
     return (

@@ -350,7 +350,11 @@ a { color: inherit; }
 .admin-list-page__heading { margin-bottom: 24px; }
 .admin-list-page h1 { align-items: baseline; display: flex; gap: 15px; }
 .admin-list-page__controls { align-items: center; display: flex; gap: 10px; }
+.admin-search { align-items: center; display: flex; position: relative; }
+.admin-search > svg { color: var(--muted-ink); left: 12px; pointer-events: none; position: absolute; }
+.admin-search .form-control { padding-left: 38px; }
 .admin-list-page__controls .form-control { border-radius: 0; min-height: 42px; }
+.admin-list-page__controls .btn { align-items: center; display: inline-flex; gap: 7px; }
 .admin-list-page__controls .btn-primary { background: var(--coral); border-color: var(--coral); border-radius: 0; font-weight: 800; min-height: 42px; }
 .admin-surface .btn-outline-secondary { border-color: var(--line); color: var(--muted-ink); }
 .admin-surface .btn-outline-secondary:hover { background: var(--ink); border-color: var(--ink); color: #fff; }
@@ -370,6 +374,10 @@ a { color: inherit; }
 .admin-table__action-tools .MuiIconButton-root:hover { background: #f1f3ed; }
 .admin-table__action-tools .admin-table__icon--danger { color: #b33d32; }
 .admin-table__action-tools .admin-table__icon--success { color: #26734d; }
+.status-badge { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .04em; padding: 6px 8px; text-transform: uppercase; }
+.status-badge--active, .status-badge--visible { background: #e2f1e7; color: #26734d; }
+.status-badge--inactive, .status-badge--hidden { background: #f1f3ed; color: var(--muted-ink); }
+.status-badge--pending { background: #fff4df; color: #8a5a15; }
 .admin-table td { border-color: var(--line); padding: 14px 16px; }
 .admin-table td small { color: var(--muted-ink); display: block; font-size: 11px; margin-top: 4px; }
 .admin-table__image-wrap { background: #efeee8; height: 55px; overflow: hidden; width: 55px; }
@@ -392,6 +400,7 @@ a { color: inherit; }
   .admin-sidebar__link { justify-content: center; padding: 12px; }
   .store-toolbar, .admin-form-page__heading, .admin-list-page__heading { align-items: start; flex-direction: column; }
   .store-toolbar__controls, .admin-list-page__controls { flex-wrap: wrap; width: 100%; }
+  .admin-search { flex: 1; min-width: 200px; }
   .admin-date-filter { flex: 1; min-width: 145px; }
   .admin-date-filter input { min-width: 0; width: 100%; }
   .store-search { flex: 1; min-width: 170px; }
@@ -404,4 +413,6 @@ a { color: inherit; }
   .product-reviews__actions { align-items: flex-start; flex-direction: column; gap: 4px; }
   .admin-form-page, .admin-list-page { padding: 38px 18px 70px; }
   .product-form__preview { position: static; }
+  .admin-table__action-trigger { display: none !important; }
+  .admin-table__action-tools { box-shadow: none; opacity: 1; padding: 0; pointer-events: auto; position: static; transform: none; visibility: visible; }
 }
