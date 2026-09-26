@@ -16,18 +16,21 @@ function Sidebar() {
 	const linkClass = ({ isActive }) => `admin-sidebar__link${isActive ? ' is-active' : ''}`;
 
 	return <aside className="admin-sidebar">
-		<div className="admin-sidebar__brand">
-			<span className="brand__mark">S</span>
-			<span>shop<span className="brand__accent">lane</span></span>
+		<div className="position-sticky top-0 pt-4">
+			<div className="admin-sidebar__brand">
+				<span className="brand__mark">S</span>
+				<span>shop<span className="brand__accent">lane</span></span>
+			</div>
+			<div className="admin-sidebar__label">Workspace</div>
+			<nav className="admin-sidebar__nav">
+				{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} className={linkClass}>
+					<Icon fontSize="small" />
+					<span>{label}</span>
+				</NavLink>)
+				}
+			</nav>
+			<div className="admin-sidebar__footer">Store operations<br /><span>Admin workspace</span></div>
 		</div>
-		<div className="admin-sidebar__label">Workspace</div>
-		<nav className="admin-sidebar__nav">
-			{links.map(({ to, label, icon: Icon }) => <NavLink key={to} to={to} className={linkClass}>
-				<Icon fontSize="small" />
-				<span>{label}</span>
-			</NavLink>)}
-		</nav>
-		<div className="admin-sidebar__footer">Store operations<br /><span>Admin workspace</span></div>
 	</aside>;
 }
 

@@ -9,5 +9,4 @@ export const REVIEW_ACTION = {
     UPDATE: "review/update",
     VISIBILITY_UPDATED: "review/visibilityUpdated",
     STATUS_UPDATED: "review/statusUpdated",
-    VERIFY_PRODUCT: "review/verifyProduct",
 };

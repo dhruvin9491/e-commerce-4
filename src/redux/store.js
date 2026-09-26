@@ -1,9 +1,6 @@
-import { applyMiddleware, createStore } from "redux";
+import { createStore } from "redux";
 import reviewReducer from "./reducers/reviewReducer";
 
-const thunkMiddleware = ({ dispatch }) => (next) => (action) =>
-	typeof action === 'function' ? action(dispatch) : next(action);
-
-const store = createStore(reviewReducer, applyMiddleware(thunkMiddleware));
+const store = createStore(reviewReducer);
 
 export default store;

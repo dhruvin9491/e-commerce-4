@@ -1,14 +1,8 @@
 import { REVIEW_ACTION } from "../../constants/ActionConstant";
 
 const initialValue = {
-    reviews: JSON.parse(localStorage.getItem("reviews") || "[]"),
-    productVerification: {
-        status: 'idle',
-        id: '',
-        product: null,
-        error: ''
-    }
-}
+    reviews: JSON.parse(localStorage.getItem("reviews") || "[]")
+};
 
 const reviewReducer = (state = initialValue, action) => {
     switch (action.type) {
@@ -16,12 +10,12 @@ const reviewReducer = (state = initialValue, action) => {
             const createdReviews = {
                 ...state,
                 reviews: [...state.reviews, action.payload]
-            }
+            };
 
             localStorage.setItem("reviews", JSON.stringify(createdReviews.reviews));
 
             return createdReviews;
-            
+
         case REVIEW_ACTION.UPDATE:
         case REVIEW_ACTION.VISIBILITY_UPDATED:
         case REVIEW_ACTION.STATUS_UPDATED:
@@ -36,21 +30,9 @@ const reviewReducer = (state = initialValue, action) => {
 
             return updatedReview;
 
-        case REVIEW_ACTION.VERIFY_PRODUCT:
-            if (
-                ['verified', 'not-found'].includes(action.payload.status) &&
-                state.productVerification.id !== action.payload.id
-            ) {
-                return state;
-            }
-            return {
-                ...state,
-                productVerification: action.payload
-            };
-
         default:
             return state;
     }
-}
+};
 
 export default reviewReducer;
