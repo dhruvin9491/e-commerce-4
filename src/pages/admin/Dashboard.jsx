@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 
 function Dashboard(props) {
     const [stats, setStats] = useState({ products: 0, users: 0 });
-    const reviews = useSelector((state) => state.reviews);
+    const reviews = useSelector((state) => state.reviews.data);
     useEffect(() => {
         Promise.all([getData(PRODUCT_API), getData(USER_API)])
             .then(([products, users]) => setStats({ products: products.data.length, users: users.data.length }))

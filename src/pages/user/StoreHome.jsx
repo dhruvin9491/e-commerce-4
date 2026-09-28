@@ -5,7 +5,7 @@ import StoreFooter from '../../components/user/StoreFooter';
 import { useAuth } from '../../helper/AuthHelper';
 import { PRODUCT_API } from '../../constants/ApiConstant';
 import { getData } from '../../helper/ApiHelper';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ProductCard from '../../components/user/ProductCard';
 import Loader from '../../components/common/Loader';
 import { Link } from 'react-router-dom';
@@ -13,7 +13,7 @@ import { CLIENT_ROUTE } from '../../constants/RoutesConstant';
 
 function StoreHome() {
     const { user } = useAuth();
-    const reviews = useSelector((state) => state.reviews);
+    const reviews = useSelector((state) => state.reviews.data);
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");

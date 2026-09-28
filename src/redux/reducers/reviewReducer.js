@@ -1,7 +1,7 @@
 import { REVIEW_ACTION } from "../../constants/ActionConstant";
 
 const initialValue = {
-    reviews: JSON.parse(localStorage.getItem("reviews") || "[]")
+    data: JSON.parse(localStorage.getItem("reviews") || "[]")
 };
 
 const reviewReducer = (state = initialValue, action) => {
@@ -9,7 +9,7 @@ const reviewReducer = (state = initialValue, action) => {
         case REVIEW_ACTION.CREATE:
             const createdReviews = {
                 ...state,
-                reviews: [...state.reviews, action.payload]
+                reviews: [...state.reviews.data, action.payload]
             };
 
             localStorage.setItem("reviews", JSON.stringify(createdReviews.reviews));
@@ -21,7 +21,7 @@ const reviewReducer = (state = initialValue, action) => {
         case REVIEW_ACTION.STATUS_UPDATED:
             const updatedReview = {
                 ...state,
-                reviews: state.reviews.map((review) =>
+                reviews: state.reviews.data.map((review) =>
                     review.id === action.payload.id ? action.payload : review
                 )
             };

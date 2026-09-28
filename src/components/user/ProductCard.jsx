@@ -5,7 +5,7 @@ import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
 import ReviewSummary from "./ReviewSummary";
 
 function ProductCard({ product }) {
-    const reviews = useSelector((state) => state.reviews)
+    const reviews = useSelector((state) => state.reviews.data)
         .filter((review) => review.pid === product.id && !review.isDeleted && review.isActive);
 
     return <article className={`product-card ${product.isDeleted ? "product-card--muted" : ""}`}>

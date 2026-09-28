@@ -18,7 +18,7 @@ function ReviewForm() {
     const { user } = useAuth();
     const dispatch = useDispatch();
     const { id, pid } = useParams();
-    const reviews = useSelector((state) => state.reviews);
+    const reviews = useSelector((state) => state.reviews.data);
     const selectedReview = reviews.find((review) => review.id === id);
     const isEditMode = Boolean(id);
 
