@@ -5,13 +5,15 @@ import DashboardOutlinedIcon from '@mui/icons-material/DashboardOutlined';
 import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
 import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
 
 function Sidebar() {
 	const links = [
 		{ to: ADMIN_ROUTE.DASHBOARD, label: 'Dashboard', icon: DashboardOutlinedIcon },
 		{ to: ADMIN_ROUTE.PRODUCT_LIST, label: 'Products', icon: Inventory2OutlinedIcon },
 		{ to: ADMIN_ROUTE.USER_LIST, label: 'Users', icon: PeopleOutlinedIcon },
-		{ to: ADMIN_ROUTE.REVIEW_LIST, label: 'Reviews', icon: RateReviewOutlinedIcon }
+		{ to: ADMIN_ROUTE.REVIEW_LIST, label: 'Reviews', icon: RateReviewOutlinedIcon },
+		{ to: ADMIN_ROUTE.COUPON_LIST, label: 'Coupons', icon: LocalOfferOutlinedIcon },
 	];
 	const linkClass = ({ isActive }) => `admin-sidebar__link${isActive ? ' is-active' : ''}`;
 

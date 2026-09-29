@@ -1,7 +1,7 @@
 import React from 'react';
 import { getInputClass } from '../../helper/UiHelper';
 
-function Input({ name, type, placeholder, formik, label, step, textarea, mkDisabled }) {
+function Input({ name, type, placeholder, formik, label, step, min, textarea, mkDisabled }) {
     const fieldProps = {
         id: name,
         name,
@@ -16,7 +16,7 @@ function Input({ name, type, placeholder, formik, label, step, textarea, mkDisab
     return (
         <>
             {label && <label className="form-label" htmlFor={name}>{label}</label>}
-            {textarea ? <textarea {...fieldProps} rows="5" /> : <input {...fieldProps} type={type} step={step} />}
+            {textarea ? <textarea {...fieldProps} rows="5" /> : <input {...fieldProps} type={type} step={step} min={min} />}
             {formik.touched[name] && formik.errors[name] &&
                 <span className="invalid-feedback">{formik.errors[name]}</span>}
         </>

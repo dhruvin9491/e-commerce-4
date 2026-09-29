@@ -23,6 +23,8 @@ import StoreProductList from './pages/user/StoreProductList';
 import StoreProductDetail from './pages/user/StoreProductDetail';
 import StoreAbout from './pages/user/StoreAbout';
 import StoreReviewForm from './pages/user/StoreReviewForm';
+import CouponList from './pages/admin/coupon/CouponList';
+import CouponForm from './pages/admin/coupon/CouponForm';
 
 function App() {
     return (
@@ -55,6 +57,9 @@ function App() {
                              <Route path={`${ADMIN_ROUTE.REVIEW_CREATE}/:pid`} element={<ReviewForm />} />
 
                             <Route path={ADMIN_ROUTE.USER_LIST} element={<UserList />} />
+                            <Route path={ADMIN_ROUTE.COUPON_LIST} element={<CouponList />} />
+                            <Route path={ADMIN_ROUTE.COUPON_CREATE} element={<CouponForm />} />
+                            <Route path={`${ADMIN_ROUTE.COUPON_UPDATE}/:id`} element={<CouponForm />} />
                         </Route>
                     </Route>
 
