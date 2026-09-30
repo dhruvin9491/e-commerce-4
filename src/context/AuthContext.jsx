@@ -1,14 +1,13 @@
 import React, { createContext, useEffect, useState } from 'react';
-
-import { createData, getData } from '../helper/ApiHelper';
-import { USER_API } from '../constants/ApiConstant';
-import { DEFAULT_ADMIN } from '../constants/CommonConstant';
+import { useDispatch } from 'react-redux';
+import { ensureDefaultAdmin } from '../redux/actions/userActions';
 
 const STORAGE_KEY = 'shoplane_user';
 
 export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+    const dispatch = useDispatch();
     const [user, setUser] = useState(() => {
         const savedUser = localStorage.getItem(STORAGE_KEY);
         return savedUser ? JSON.parse(savedUser) : null;
@@ -21,16 +20,10 @@ export function AuthProvider({ children }) {
             setUser(JSON.parse(savedUser));
         }
 
-        getData(`${USER_API}?email=${encodeURIComponent(DEFAULT_ADMIN.email)}`)
-            .then(({ data }) => {
-                if (!data.length) {
-                    return createData(USER_API, DEFAULT_ADMIN);
-                }
-                return null;
-            })
+        dispatch(ensureDefaultAdmin())
             .catch(() => null)
             .finally(() => setReady(true));
-    }, []);
+    }, [dispatch]);
 
     const login = (userData) => {
         setUser(userData);

@@ -22,8 +22,11 @@ export const COUPON_FORM_INIT_DATA = {
     discountType: "percentage",
     discountValue: 50,
     minimumOrder: 100,
-    usageLimit: 10,
+    startsAt: "",
     expiresAt: "",
+    usageLimit: 10,
+    usageCount: 0,
+    perUserLimit: 1,
 }
 
 export const REVIEW_FORM_INIT_DATA = {

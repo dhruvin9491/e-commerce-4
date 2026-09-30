@@ -24,7 +24,7 @@ function StoreReviewForm() {
     const formik = useFormik({
         initialValues: REVIEW_FORM_INIT_DATA,
         validationSchema: REVIEW_CLIENT_YUP_SCHEMA,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             if (!user || isSubmitting) {
                 return;
             }
@@ -36,11 +36,18 @@ function StoreReviewForm() {
                 pid,
                 role: user.role,
                 isActive: false,
+                isDeleted: false,
             };
 
-            dispatch(createReview(reviewData));
-            showToast('success', 'Review submitted for approval');
-            navigate(`${CLIENT_ROUTE.PRODUCT}/${pid}`);
+            try {
+                await dispatch(createReview(reviewData));
+                showToast('success', 'Review submitted for approval');
+                navigate(`${CLIENT_ROUTE.PRODUCT}/${pid}`);
+            } catch (error) {
+                showToast('error', error.message);
+            } finally {
+                setIsSubmitting(false);
+            }
         }
     });
 

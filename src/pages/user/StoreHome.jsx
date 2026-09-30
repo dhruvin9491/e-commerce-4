@@ -1,29 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 
 import Header from '../../components/user/Header';
 import StoreFooter from '../../components/user/StoreFooter';
 import { useAuth } from '../../helper/AuthHelper';
-import { PRODUCT_API } from '../../constants/ApiConstant';
-import { getData } from '../../helper/ApiHelper';
 import { useDispatch, useSelector } from 'react-redux';
 import ProductCard from '../../components/user/ProductCard';
 import Loader from '../../components/common/Loader';
 import { Link } from 'react-router-dom';
 import { CLIENT_ROUTE } from '../../constants/RoutesConstant';
+import { fetchProducts } from '../../redux/actions/productActions';
+import { fetchReviews } from '../../redux/actions/reviewActions';
 
 function StoreHome() {
     const { user } = useAuth();
+    const dispatch = useDispatch();
     const reviews = useSelector((state) => state.reviews.data);
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState("");
+    const { data, loading, error } = useSelector((state) => state.products);
+    const products = data.filter((product) => !product.isDeleted && product.isActive);
 
     useEffect(() => {
-        getData(PRODUCT_API)
-            .then(({ data }) => setProducts(data.filter((product) => !product.isDeleted && product.isActive)))
-            .catch((requestError) => setError(requestError.message))
-            .finally(() => setLoading(false));
-    }, []);
+        dispatch(fetchProducts()).catch(() => null);
+        dispatch(fetchReviews()).catch(() => null);
+    }, [dispatch]);
 
     const getReviewStats = (product) => {
         const productReviews = reviews.filter((review) => review.pid === product.id && !review.isDeleted && review.isActive);

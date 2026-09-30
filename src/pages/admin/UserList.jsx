@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { USER_API } from "../../constants/ApiConstant";
-import { getData, deleteData } from "../../helper/ApiHelper";
+import { useDispatch, useSelector } from "react-redux";
 import { showToast } from "../../helper/UiHelper";
 import AdminPageHeader from '../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../components/admin/AdminToolbar';
@@ -8,28 +7,23 @@ import { IconButton, Tooltip } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import RestoreIcon from '@mui/icons-material/Restore';
+import { fetchUsers, toggleUserStatus } from "../../redux/actions/userActions";
 
 function UserList() {
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const { data: users, loading, error } = useSelector((state) => state.users);
     const [search, setSearch] = useState('');
     const [role, setRole] = useState('all');
     const [roleSort, setRoleSort] = useState('default');
 
-    const loadUsers = () => getData(USER_API)
-        .then(({ data }) => setUsers(data))
-        .catch((error) => showToast("error", error.message))
-        .finally(() => setLoading(false));
-
     useEffect(() => {
-        loadUsers();
-    }, []);
+        dispatch(fetchUsers()).catch((requestError) => showToast("error", requestError.message));
+    }, [dispatch]);
 
     const toggleUser = async (user) => {
         try {
-            await deleteData(`${USER_API}/${user.id}`, user);
+            await dispatch(toggleUserStatus(user));
             showToast("success", user.isDeleted ? 'User restored' : 'User deactivated');
-            loadUsers();
         } catch (error) { showToast("error", error.message); }
     };
 
@@ -45,7 +39,7 @@ function UserList() {
             return 0;
         });
 
-    if (loading) return <div className="p-5 text-center">Loading users...</div>;
+    if (loading && !users.length) return <div className="p-5 text-center">Loading users...</div>;
     return <main className="admin-list-page">
         <AdminPageHeader eyebrow="Administration" title="Users" description="Review customer accounts and access status." count={filteredUsers.length} action={(
             <AdminToolbar
@@ -75,6 +69,7 @@ function UserList() {
                 </tr>) : <tr><td colSpan="5" className="review-table__empty">No users match the current filters.</td></tr>}</tbody>
             </table>
         </div>
+        {error && <p className="text-danger mt-3">{error}</p>}
     </main>;
 }
 

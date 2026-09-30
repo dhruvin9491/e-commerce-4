@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
-import { toggleReviewDeleted, toggleReviewVisibility } from '../../../redux/actions/reviewActions';
+import { fetchReviews, toggleReviewDeleted, toggleReviewVisibility } from '../../../redux/actions/reviewActions';
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import AdminButton from '../../../components/admin/AdminButton';
@@ -14,15 +14,20 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import EditIcon from '@mui/icons-material/Edit';
 import { IconButton, Tooltip } from '@mui/material';
 import { ROLES } from '../../../constants/CommonConstant';
+import { showToast } from '../../../helper/UiHelper';
 import AddIcon from '@mui/icons-material/Add';
 
 function ReviewList() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const { reviews } = useSelector((state) => state);
+    const reviews = useSelector((state) => state.reviews.data);
     const [search, setSearch] = useState('');
     const [dateFrom, setDateFrom] = useState('');
     const [dateTo, setDateTo] = useState('');
+
+    useEffect(() => {
+        dispatch(fetchReviews()).catch((error) => showToast('error', error.message));
+    }, [dispatch]);
 
     const formatDate = (date) => date
         ? new Date(date).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })
@@ -84,7 +89,7 @@ function ReviewList() {
                                         </Tooltip>
                                         <div className="admin-table__action-tools">
                                             <Tooltip title={r.isActive ? 'Hide review' : 'Show review'}>
-                                                <span><IconButton size="small" onClick={() => dispatch(toggleReviewVisibility(r))} disabled={r.isDeleted} aria-label={r.isActive ? 'Hide review' : 'Show review'}>{r.isActive ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}</IconButton></span>
+                                                <span><IconButton size="small" onClick={() => dispatch(toggleReviewVisibility(r)).catch((error) => showToast('error', error.message))} disabled={r.isDeleted} aria-label={r.isActive ? 'Hide review' : 'Show review'}>{r.isActive ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}</IconButton></span>
                                             </Tooltip>
                                             {
                                                 r.role === ROLES.ADMIN &&
@@ -93,7 +98,7 @@ function ReviewList() {
                                                 </Tooltip>
                                             }
                                             <Tooltip title={r.isDeleted ? 'Restore review' : 'Delete review'}>
-                                                <IconButton onClick={() => dispatch(toggleReviewDeleted(r))} className="admin-table__icon--danger" size="small" aria-label={r.isDeleted ? 'Restore review' : 'Delete review'}>{r.isDeleted ? <RestoreFromTrashIcon fontSize="small" /> : <DeleteIcon fontSize="small" />}</IconButton>
+                                                <IconButton onClick={() => dispatch(toggleReviewDeleted(r)).catch((error) => showToast('error', error.message))} className="admin-table__icon--danger" size="small" aria-label={r.isDeleted ? 'Restore review' : 'Delete review'}>{r.isDeleted ? <RestoreFromTrashIcon fontSize="small" /> : <DeleteIcon fontSize="small" />}</IconButton>
                                             </Tooltip>
                                         </div>
                                     </div>

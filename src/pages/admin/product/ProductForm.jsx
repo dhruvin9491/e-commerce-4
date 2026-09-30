@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { PRODUCT_FORM_INIT_DATA } from '../../../utils/InitFormData';
 import { PRODUCT_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
@@ -8,58 +8,46 @@ import Input from '../../../components/common/Input';
 import AdminFormHeader from '../../../components/admin/AdminFormHeader';
 import AdminButton from '../../../components/admin/AdminButton';
 import { GenerateMetaData } from '../../../helper/DataGenrateHelper';
-import { createData, getData, updateData } from '../../../helper/ApiHelper';
-import { PRODUCT_API } from '../../../constants/ApiConstant';
 import { showToast } from '../../../helper/UiHelper';
+import { useDispatch, useSelector } from 'react-redux';
+import { createProduct, fetchProduct, updateProduct } from '../../../redux/actions/productActions';
 
 function ProductForm() {
-    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
+    const dispatch = useDispatch();
+    const product = useSelector((state) => state.products.data.find((item) => item.id === id));
+    const loading = useSelector((state) => state.products.loading);
 
     const formik = useFormik({
-        initialValues: PRODUCT_FORM_INIT_DATA,
+        enableReinitialize: true,
+        initialValues: product || PRODUCT_FORM_INIT_DATA,
         validationSchema: PRODUCT_YUP_SCHEMA,
         onSubmit: async (values) => {
-            setLoading(true);
-
-            if (id) {
-                updateData(`${PRODUCT_API}/${id}`, { updatedAt: crypto.randomUUID(), ...values })
-                    .then(() => {
-                        showToast("success", 'Product updated successfully');
-                        navigate(ADMIN_ROUTE.PRODUCT_LIST);
-                        formik.resetForm();
-                    })
-                    .catch((error) => showToast("error", error.message))
-                    .finally(() => setLoading(false));
-            } else {
-                createData(PRODUCT_API, {
+            try {
+                if (id) {
+                    await dispatch(updateProduct({ ...product, ...values }));
+                    showToast("success", 'Product updated successfully');
+                } else {
+                    await dispatch(createProduct({
                     ...GenerateMetaData(),
                     isActive: false,
                     ...values
-                })
-                    .then(() => {
-                        showToast("success", 'Product listed successfully.');
-                        navigate(ADMIN_ROUTE.PRODUCT_LIST);
-                        formik.resetForm();
-                    })
-                    .catch((error) => showToast("error", error.message))
-                    .finally(() => setLoading(false));
+                    }));
+                    showToast("success", 'Product listed successfully.');
+                }
+                navigate(ADMIN_ROUTE.PRODUCT_LIST);
+                formik.resetForm();
+            } catch (error) {
+                showToast("error", error.message);
             }
         }
     });
 
-    const getProduct = async (id) => {
-        getData(`${PRODUCT_API}/${id}`)
-            .then((res) => formik.setValues(res.data))
-            .catch((error) => showToast("error", error.message))
-            .finally(() => setLoading(false));
-    }
-
     useEffect(() => {
         if (!id) return;
-        getProduct(id);
-    }, []);
+        if (!product) dispatch(fetchProduct(id)).catch((error) => showToast("error", error.message));
+    }, [id, product, dispatch]);
 
     if (loading) return <h1 className='my-5 text-center text-success'>Loading product</h1>;
 

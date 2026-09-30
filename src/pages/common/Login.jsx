@@ -6,36 +6,27 @@ import { ADMIN_ROUTE, AUTH_ROUTE, CLIENT_ROUTE } from '../../constants/RoutesCon
 import { ROLES } from '../../constants/CommonConstant';
 import { LOGIN_FORM_INIT_DATA } from '../../utils/InitFormData';
 import { LOGIN_YUP_SCHEMA } from '../../utils/YupValidationSchema';
-import { getData } from '../../helper/ApiHelper';
-import { USER_API } from '../../constants/ApiConstant';
 import { useAuth } from '../../helper/AuthHelper';
 import { showToast } from '../../helper/UiHelper';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../../redux/actions/userActions';
 
 function Login() {
     const navigate = useNavigate();
     const { login } = useAuth();
+    const dispatch = useDispatch();
 
     const formik = useFormik({
         initialValues: LOGIN_FORM_INIT_DATA,
         validationSchema: LOGIN_YUP_SCHEMA,
         onSubmit: async (values) => {
             try {
-                const { data } = await getData(`${USER_API}?email=${encodeURIComponent(values.email)}`);
-                const foundUser = data[0];
-
-                if (!foundUser || foundUser.password !== values.password) {
-                    return showToast('error', 'Invalid email or password');
-                }
-
-                if (foundUser.isDeleted) {
-                    return showToast('warning', 'Your account is inactive. Contact an administrator.');
-                }
-
+                const foundUser = await dispatch(loginUser(values));
                 login(foundUser);
                 showToast('success', 'Login successful');
                 navigate(foundUser.role === ROLES.ADMIN ? ADMIN_ROUTE.DASHBOARD : CLIENT_ROUTE.HOME);
             } catch (error) {
-                showToast('error', error.message);
+                showToast(error.message.includes('inactive') ? 'warning' : 'error', error.message);
             }
         }
     });

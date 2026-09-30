@@ -1,12 +1,5 @@
 import * as Yup from "yup";
 
-const getTodayDate = () => {
-    const today = new Date();
-    const month = String(today.getMonth() + 1).padStart(2, "0");
-    const day = String(today.getDate()).padStart(2, "0");
-    return `${today.getFullYear()}-${month}-${day}`;
-};
-
 export const REGISTER_YUP_SCHEMA = Yup.object({
     firstname: Yup.string().min(2).max(56).required(),
     lastname: Yup.string().min(2).max(56).required(),
@@ -37,12 +30,11 @@ export const COUPON_YUP_SCHEMA = Yup.object({
         then: (schema) => schema.max(100, "Percentage cannot exceed 100"),
     }).required(),
     minimumOrder: Yup.number().min(0).required(),
+    startsAt: Yup.date().typeError("Start date is required").required("Start date is required"),
+    expiresAt: Yup.date().typeError("Expiry date is required").min(Yup.ref("startsAt"), "Expiry must be after the start date").required("Expiry date is required"),
     usageLimit: Yup.number().integer().min(1).required(),
-    expiresAt: Yup.string().required("Expiry date is required").test(
-        "not-in-past",
-        "Expiry date cannot be in the past",
-        (value) => !value || value >= getTodayDate()
-    ),
+    usageCount: Yup.number().integer().min(0).required(),
+    perUserLimit: Yup.number().integer().min(1).required(),
 })
 
 export const REVIEW_FIELDS_YUP_SCHEMA = Yup.object({

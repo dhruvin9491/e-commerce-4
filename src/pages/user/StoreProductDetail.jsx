@@ -1,31 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import Header from "../../components/user/Header";
 import StoreFooter from "../../components/user/StoreFooter";
 import Loader from "../../components/common/Loader";
 import { PageState } from "../../components/common/PageState";
-import { PRODUCT_API } from "../../constants/ApiConstant";
 import { CLIENT_ROUTE } from "../../constants/RoutesConstant";
-import { getData } from "../../helper/ApiHelper";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ReviewSummary from "../../components/user/ReviewSummary";
 import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import { fetchProduct } from "../../redux/actions/productActions";
+import { fetchReviews } from "../../redux/actions/reviewActions";
 
 function StoreProductDetail() {
     const { id } = useParams();
     const navigate = useNavigate();
-    const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true);
-    const { reviews } = useSelector((state) => state);
-    const [error, setError] = useState("");
+    const dispatch = useDispatch();
+    const product = useSelector((state) => state.products.data.find((item) => item.id === id));
+    const { loading, error } = useSelector((state) => state.products);
+    const reviews = useSelector((state) => state.reviews.data);
 
     useEffect(() => {
-        getData(`${PRODUCT_API}/${id}`)
-            .then(({ data }) => setProduct(data))
-            .catch((requestError) => setError(requestError.message))
-            .finally(() => setLoading(false));
-    }, [id]);
+        dispatch(fetchProduct(id)).catch(() => null);
+        dispatch(fetchReviews()).catch(() => null);
+    }, [id, dispatch]);
 
     const filteredReviews = reviews.filter((r) => r.pid === id && r.isDeleted === false && r.isActive === true);
 

@@ -7,12 +7,13 @@ import { ROLES } from '../../constants/CommonConstant';
 import { REGISTER_FORM_INIT_DATA } from '../../utils/InitFormData';
 import { REGISTER_YUP_SCHEMA } from '../../utils/YupValidationSchema';
 import { GenerateMetaData } from '../../helper/DataGenrateHelper';
-import { createData, getData } from '../../helper/ApiHelper';
-import { USER_API } from '../../constants/ApiConstant';
 import { showToast } from '../../helper/UiHelper';
+import { useDispatch } from 'react-redux';
+import { registerUser } from '../../redux/actions/userActions';
 
 function Register() {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const formik = useFormik({
         initialValues: REGISTER_FORM_INIT_DATA,
         validationSchema: REGISTER_YUP_SCHEMA,
@@ -25,13 +26,7 @@ function Register() {
             };
 
             try {
-                const { data } = await getData(`${USER_API}?email=${encodeURIComponent(values.email)}`);
-
-                if (data.length) {
-                    return showToast('error', 'An account with this email already exists');
-                }
-
-                await createData(USER_API, newUser);
+                await dispatch(registerUser(newUser));
                 showToast('success', 'Registration successful');
                 navigate(AUTH_ROUTE.LOGIN);
             } catch (error) {

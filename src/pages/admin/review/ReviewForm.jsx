@@ -1,5 +1,5 @@
 import { useFormik } from 'formik';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { REVIEW_FORM_INIT_DATA } from '../../../utils/InitFormData';
 import { REVIEW_YUP_SCHEMA } from '../../../utils/YupValidationSchema';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
@@ -11,22 +11,24 @@ import AdminButton from '../../../components/admin/AdminButton';
 import { GenerateMetaData } from '../../../helper/DataGenrateHelper';
 import { useAuth } from '../../../helper/AuthHelper';
 import { useDispatch, useSelector } from 'react-redux';
-import { createReview, updateReview } from '../../../redux/actions/reviewActions';
+import { createReview, fetchReviews, updateReview } from '../../../redux/actions/reviewActions';
+import { showToast } from '../../../helper/UiHelper';
 
 function ReviewForm() {
     const navigate = useNavigate();
     const { user } = useAuth();
     const dispatch = useDispatch();
     const { id, pid } = useParams();
-    const reviews = useSelector((state) => state.reviews.data);
+    const { data: reviews, loading: reviewsLoading } = useSelector((state) => state.reviews);
     const selectedReview = reviews.find((review) => review.id === id);
     const isEditMode = Boolean(id);
+    const reviewFetchStarted = useRef(false);
 
     const formik = useFormik({
         enableReinitialize: true,
-        initialValues: selectedReview || REVIEW_FORM_INIT_DATA,
+        initialValues: selectedReview || { ...REVIEW_FORM_INIT_DATA, pid: pid || '' },
         validationSchema: REVIEW_YUP_SCHEMA,
-        onSubmit: (values) => {
+        onSubmit: async (values) => {
             const productId = values.pid?.trim();
             const reviewData = {
                 ...(selectedReview || GenerateMetaData()),
@@ -36,23 +38,30 @@ function ReviewForm() {
                 isActive: selectedReview?.isActive ?? false,
             };
 
-            dispatch(isEditMode ? updateReview(reviewData) : createReview({ ...reviewData, isActive: false }));
-
-            navigate(ADMIN_ROUTE.REVIEW_LIST);
+            try {
+                await dispatch(isEditMode ? updateReview(reviewData) : createReview({ ...reviewData, isActive: false, isDeleted: false }));
+                navigate(ADMIN_ROUTE.REVIEW_LIST);
+            } catch (error) {
+                showToast('error', error.message);
+            }
         }
     });
 
     useEffect(() => {
+        if (id && !selectedReview && !reviewFetchStarted.current) {
+            reviewFetchStarted.current = true;
+            dispatch(fetchReviews()).catch(() => null);
+            return;
+        }
+
+        if (id && !selectedReview && reviewsLoading) return;
+
         if (id && !selectedReview) {
             navigate(ADMIN_ROUTE.REVIEW_LIST);
             return;
         }
 
-        const productId = pid || selectedReview?.pid;
-        if (!productId) return;
-
-        if (pid) formik.setFieldValue("pid", pid);
-    }, [id, pid, selectedReview, navigate, formik]);
+    }, [id, selectedReview, reviewsLoading, dispatch, navigate]);
 
     return (
         <main className="admin-form-page">

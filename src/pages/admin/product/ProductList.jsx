@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { PRODUCT_API } from '../../../constants/ApiConstant';
-import { deleteData, getData, updateData } from '../../../helper/ApiHelper';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
 import { showToast } from '../../../helper/UiHelper';
+import { fetchProducts, toggleProductDeleted, toggleProductVisibility } from '../../../redux/actions/productActions';
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import AdminButton from '../../../components/admin/AdminButton';
@@ -18,40 +18,28 @@ import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
 import AddIcon from '@mui/icons-material/Add';
 
 function ProductList() {
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const { data: products, error, loading } = useSelector((state) => state.products);
     const navigate = useNavigate();
     const [search, setSearch] = useState(null);
     const [sortMode, setSortMode] = useState("default");
 
-    const getProduct = async () => {
-        getData(PRODUCT_API)
-            .then((res) => setProducts(res.data))
-            .catch((error) => setError(error.message))
-            .finally(() => setLoading(false));
-    };
-
-    const manageVisibility = async (id, visibility) => {
-        setLoading(true);
-        updateData(`${PRODUCT_API}/${id}`, { updatedAt: new Date().toISOString(), isActive: !visibility })
-            .then(() => {
-                showToast("success", 'Product status updated');
-                getProduct()
-            })
-            .catch(() => showToast("error", 'Failed to update product'))
-            .finally(() => setLoading(false));
+    const manageVisibility = async (product) => {
+        try {
+            await dispatch(toggleProductVisibility(product));
+            showToast("success", 'Product status updated');
+        } catch (requestError) {
+            showToast("error", requestError.message);
+        }
     }
 
-    const deleteProduct = async (p) => {
-        setLoading(true);
-        deleteData(`${PRODUCT_API}/${p.id}`, p)
-            .then(() => {
-                showToast("success", p.isDeleted ? 'Product recovered successfully' : 'Product deleted successfully');
-                getProduct()
-            })
-            .catch(() => showToast("error", 'Failed to update product status'))
-            .finally(() => setLoading(false));
+    const deleteProduct = async (product) => {
+        try {
+            await dispatch(toggleProductDeleted(product));
+            showToast("success", product.isDeleted ? 'Product recovered successfully' : 'Product deleted successfully');
+        } catch (requestError) {
+            showToast("error", requestError.message);
+        }
     };
 
     const filteredProducts = [...products]
@@ -62,8 +50,8 @@ function ProductList() {
             return 0;
         });
     useEffect(() => {
-        getProduct();
-    }, []);
+        dispatch(fetchProducts()).catch(() => null);
+    }, [dispatch]);
 
     if (loading) return <h1 className='my-5 text-center text-success'>Loading products</h1>;
 
@@ -114,7 +102,7 @@ function ProductList() {
                                     </Tooltip>
                                     <div className="admin-table__action-tools">
                                         <Tooltip title={p.isActive ? 'Hide product' : 'Show product'}>
-                                            <span><IconButton size="small" onClick={() => manageVisibility(p.id, p.isActive)} disabled={p.isDeleted} aria-label={p.isActive ? 'Hide product' : 'Show product'}>{p.isActive ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}</IconButton></span>
+                                            <span><IconButton size="small" onClick={() => manageVisibility(p)} disabled={p.isDeleted || loading} aria-label={p.isActive ? 'Hide product' : 'Show product'}>{p.isActive ? <VisibilityOffIcon fontSize="small" /> : <VisibilityIcon fontSize="small" />}</IconButton></span>
                                         </Tooltip>
                                         <Tooltip title="Edit product">
                                             <span><IconButton size="small" onClick={() => navigate(`${ADMIN_ROUTE.PRODUCT_UPDATE}/${p.id}`)} disabled={p.isDeleted} aria-label="Edit product"><EditIcon fontSize="small" /></IconButton></span>
@@ -123,7 +111,7 @@ function ProductList() {
                                             <IconButton size="small" onClick={() => navigate(`${ADMIN_ROUTE.REVIEW_CREATE}/${p.id}`)} aria-label="Add review"><RateReviewIcon fontSize="small" /></IconButton>
                                         </Tooltip>
                                         <Tooltip title={p.isDeleted ? 'Restore product' : 'Delete product'}>
-                                            <IconButton className="admin-table__icon--danger" size="small" onClick={() => deleteProduct(p)} aria-label={p.isDeleted ? 'Restore product' : 'Delete product'}>{p.isDeleted ? <RestoreFromTrashIcon fontSize="small" /> : <DeleteIcon fontSize="small" />}</IconButton>
+                                            <IconButton className="admin-table__icon--danger" size="small" onClick={() => deleteProduct(p)} disabled={loading} aria-label={p.isDeleted ? 'Restore product' : 'Delete product'}>{p.isDeleted ? <RestoreFromTrashIcon fontSize="small" /> : <DeleteIcon fontSize="small" />}</IconButton>
                                         </Tooltip>
                                     </div>
                                 </div>

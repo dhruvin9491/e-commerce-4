@@ -1,25 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { PRODUCT_API } from '../../constants/ApiConstant';
-import { getData } from '../../helper/ApiHelper';
+import { useDispatch, useSelector } from 'react-redux';
 import Header from '../../components/user/Header';
 import StoreFooter from '../../components/user/StoreFooter';
 import ProductCard from '../../components/user/ProductCard';
 import Loader from '../../components/common/Loader';
 import { PageState } from '../../components/common/PageState';
+import { fetchProducts } from '../../redux/actions/productActions';
+import { fetchReviews } from '../../redux/actions/reviewActions';
 
 function StoreProductList() {
-    const [products, setProducts] = useState([]);
-    const [error, setError] = useState("");
-    const [loading, setLoading] = useState(true);
+    const dispatch = useDispatch();
+    const { data, error, loading } = useSelector((state) => state.products);
+    const products = data;
     const [search, setSearch] = useState("");
     const [sortMode, setSortMode] = useState("default");
-
-    const getProduct = async () => {
-        getData(PRODUCT_API)
-            .then((res) => setProducts(res.data))
-            .catch((error) => setError(error.message))
-            .finally(() => setLoading(false));
-    };
 
     const filteredProducts = products
         .filter((p) => p.isDeleted === false && p.isActive === true)
@@ -30,8 +24,9 @@ function StoreProductList() {
             return 0;
         });
     useEffect(() => {
-        getProduct();
-    }, []);
+        dispatch(fetchProducts()).catch(() => null);
+        dispatch(fetchReviews()).catch(() => null);
+    }, [dispatch]);
 
     if (loading) return <><Header /><main className="catalog"><Loader label="Loading products" /></main><StoreFooter /></>;
 
