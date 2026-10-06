@@ -33,7 +33,6 @@ function CouponForm() {
     }, [id, coupon, dispatch]);
 
     const formik = useFormik({
-        enableReinitialize: true,
         initialValues: coupon ? {
             code: coupon.code,
             discountType: coupon.discountType,
@@ -60,7 +59,7 @@ function CouponForm() {
                     usageLimit: Number(values.usageLimit),
                     usageCount: Number(coupon?.usageCount ?? values.usageCount ?? 0),
                     perUserLimit: Number(values.perUserLimit),
-                    isActive: coupon?.isActive ?? true,
+                    isActive: coupon?.isActive ?? false,
                     isDeleted: coupon?.isDeleted ?? false,
                 };
                 if (coupon) {

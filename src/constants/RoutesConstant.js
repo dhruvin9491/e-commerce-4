@@ -9,6 +9,7 @@ export const CLIENT_ROUTE = {
     PROFILE: "/profile",
     STORE: "/store",
     ABOUT: "/about",
+    CHECKOUT: "/checkout",
     PRODUCT: "/store/product",
     REVIEW: "/store/review"
 };

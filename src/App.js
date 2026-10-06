@@ -23,6 +23,7 @@ import StoreProductList from './pages/user/StoreProductList';
 import StoreProductDetail from './pages/user/StoreProductDetail';
 import StoreAbout from './pages/user/StoreAbout';
 import StoreReviewForm from './pages/user/StoreReviewForm';
+import Checkout from './pages/user/Checkout';
 import CouponList from './pages/admin/coupon/CouponList';
 import CouponForm from './pages/admin/coupon/CouponForm';
 
@@ -39,6 +40,7 @@ function App() {
                         <Route path={CLIENT_ROUTE.HOME} element={<StoreHome />} />
                         <Route path={CLIENT_ROUTE.PROFILE} element={<StoreProfile />} />
                         <Route path={CLIENT_ROUTE.ABOUT} element={<StoreAbout />} />
+                        <Route path={CLIENT_ROUTE.CHECKOUT} element={<Checkout />} />
                         <Route path={CLIENT_ROUTE.STORE} element={<StoreProductList />} />
                         <Route path={`${CLIENT_ROUTE.PRODUCT}/:id`} element={<StoreProductDetail />} />
                         <Route path={`${CLIENT_ROUTE.REVIEW}/:pid`} element={<StoreReviewForm />} />

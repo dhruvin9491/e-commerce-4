@@ -31,6 +31,7 @@ function Header() {
                     <Link to={CLIENT_ROUTE.HOME}>Home</Link>
                      <Link to={CLIENT_ROUTE.ABOUT}>About</Link>
                     <Link to={CLIENT_ROUTE.STORE}>Store</Link>
+                    <Link to={CLIENT_ROUTE.CHECKOUT}>Checkout</Link>
                     <Link to={CLIENT_ROUTE.PROFILE}>Profile</Link>
                 </nav>
 
