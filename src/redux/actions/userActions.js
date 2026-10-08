@@ -1,7 +1,8 @@
 import { USER_ACTION } from "../../constants/ActionConstant";
-import { DEFAULT_ADMIN } from "../../constants/CommonConstant";
+import { DEFAULT_ADMIN, ROLES } from "../../constants/CommonConstant";
 import { USER_API } from "../../constants/ApiConstant";
-import { createData, deleteData, getData } from "../../helper/ApiHelper";
+import { createData, deleteData, getData, updateData } from "../../helper/ApiHelper";
+import { GenerateMetaData } from "../../helper/DataGenrateHelper";
 
 const dispatchError = (dispatch, type, error) => {
     dispatch({ type, payload: error.message || "Internal server error" });
@@ -52,6 +53,59 @@ export const loginUser = (credentials) => async (dispatch) => {
         if (user.isDeleted) throw new Error("Your account is inactive. Contact an administrator.");
         dispatch({ type: USER_ACTION.LOGIN_SUCCESS, payload: user });
         return user;
+    } catch (error) {
+        return dispatchError(dispatch, USER_ACTION.LOGIN_ERROR, error);
+    }
+};
+
+export const loginExternalUser = (profile) => async (dispatch) => {
+    try {
+        dispatch({ type: USER_ACTION.LOGIN_LOADING });
+
+        const identity = profile.email
+            ? { field: "email", value: profile.email }
+            : { field: "phone", value: profile.phone };
+
+        if (!identity.value) {
+            throw new Error("The sign-in provider did not return an email address or phone number.");
+        }
+
+        const response = await getData(
+            `${USER_API}?${identity.field}=${encodeURIComponent(identity.value)}`
+        );
+        const existingUser = response.data[0];
+
+        if (existingUser?.isDeleted) {
+            throw new Error("Your account is inactive. Contact an administrator.");
+        }
+
+        const timestamp = new Date().toISOString();
+        const userData = existingUser
+            ? {
+                ...existingUser,
+                name: existingUser.name || profile.name,
+                email: existingUser.email || profile.email || "",
+                phone: existingUser.phone || profile.phone || "",
+                photoURL: existingUser.photoURL || profile.photoURL || "",
+                authProvider: profile.authProvider,
+                updatedAt: timestamp
+            }
+            : {
+                ...GenerateMetaData(),
+                name: profile.name,
+                email: profile.email || "",
+                phone: profile.phone || "",
+                photoURL: profile.photoURL || "",
+                authProvider: profile.authProvider,
+                role: ROLES.USER
+            };
+
+        const result = existingUser
+            ? await updateData(`${USER_API}/${existingUser.id}`, userData)
+            : await createData(USER_API, userData);
+
+        dispatch({ type: USER_ACTION.LOGIN_SUCCESS, payload: result.data });
+        return result.data;
     } catch (error) {
         return dispatchError(dispatch, USER_ACTION.LOGIN_ERROR, error);
     }

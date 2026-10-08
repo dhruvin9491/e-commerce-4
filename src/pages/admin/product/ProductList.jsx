@@ -7,6 +7,7 @@ import { fetchProducts, toggleProductDeleted, toggleProductVisibility } from '..
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import AdminButton from '../../../components/admin/AdminButton';
+import AdminRecordId from '../../../components/admin/AdminRecordId';
 import { IconButton, Tooltip } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -64,8 +65,6 @@ function ProductList() {
                     search={search || ''}
                     onSearch={(value) => setSearch(value.toLowerCase())}
                     placeholder="Search products..."
-                    hasFilters={Boolean(search || sortMode !== 'default')}
-                    onReset={() => { setSearch(null); setSortMode('default'); }}
                 >
                     <select value={sortMode} onChange={(event) => setSortMode(event.target.value)} className='form-control form-select'>
                         <option value="default">Default</option>
@@ -79,13 +78,13 @@ function ProductList() {
             <table className="table align-middle mb-0 admin-table">
                 <thead>
                     <tr>
-                        <th>Id</th><th>Image</th><th>Title</th><th>Stock</th><th>Price</th><th className="admin-table__actions">Actions</th>
+                        <th className="admin-table__id-column">Product ID</th><th>Image</th><th>Title</th><th>Stock</th><th>Price</th><th className="admin-table__actions">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {filteredProducts.length ? filteredProducts.map((p) =>
                         <tr key={p.id} className={p.isDeleted ? "text-muted" : ""}>
-                            <td className="fw-semibold">{p.id}</td>
+                            <td className="admin-table__id-column"><AdminRecordId id={p.id} /></td>
                             <td><div className="admin-table__image-wrap">
                                 <img src={p.thumbnail} alt={p.title} className="admin-table__image" />
                             </div>

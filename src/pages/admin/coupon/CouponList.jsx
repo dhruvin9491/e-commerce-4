@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import AdminButton from '../../../components/admin/AdminButton';
+import AdminRecordId from '../../../components/admin/AdminRecordId';
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import { ADMIN_ROUTE } from '../../../constants/RoutesConstant';
@@ -60,8 +61,6 @@ function CouponList() {
                     search={search}
                     onSearch={setSearch}
                     placeholder="Search coupon codes..."
-                    hasFilters={Boolean(search || status !== 'all')}
-                    onReset={() => { setSearch(''); setStatus('all'); }}
                 >
                     <select value={status} onChange={(event) => setStatus(event.target.value)} className="form-control form-select">
                         <option value="all">All coupons</option>
@@ -75,12 +74,13 @@ function CouponList() {
             <div className="admin-table-wrap">
                 <table className="table align-middle mb-0 admin-table">
                     <thead>
-                        <tr><th>Code</th><th>Discount</th><th>Minimum order</th><th>Validity</th><th>Usage</th><th>Status</th><th className="admin-table__actions">Actions</th></tr>
+                        <tr><th className="admin-table__id-column">Coupon ID</th><th>Code</th><th>Discount</th><th>Minimum order</th><th>Validity</th><th>Usage</th><th>Status</th><th className="admin-table__actions">Actions</th></tr>
                     </thead>
                     <tbody>
                         {filteredCoupons.length ? filteredCoupons.map((coupon) => {
                             const expired = coupon.expiresAt && Date.parse(coupon.expiresAt) <= Date.now();
                             return <tr key={coupon.id} className={coupon.isDeleted || expired ? 'text-muted' : ''}>
+                                <td className="admin-table__id-column"><AdminRecordId id={coupon.id} /></td>
                                 <td><strong>{coupon.code}</strong></td>
                                 <td><strong>{formatDiscount(coupon)}</strong></td>
                                 <td>₹{Number(coupon.minimumOrder).toLocaleString('en-IN')}</td>
@@ -110,7 +110,7 @@ function CouponList() {
                                     </div>
                                 </td>
                             </tr>;
-                        }) : <tr><td colSpan="7" className="review-table__empty">{error || (coupons.length ? 'No coupons match the current filters.' : 'No coupons yet. Create one to start your next promotion.')}</td></tr>}
+                        }) : <tr><td colSpan="8" className="review-table__empty">{error || (coupons.length ? 'No coupons match the current filters.' : 'No coupons yet. Create one to start your next promotion.')}</td></tr>}
                     </tbody>
                 </table>
             </div>

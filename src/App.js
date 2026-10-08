@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
@@ -26,16 +26,32 @@ import StoreReviewForm from './pages/user/StoreReviewForm';
 import Checkout from './pages/user/Checkout';
 import CouponList from './pages/admin/coupon/CouponList';
 import CouponForm from './pages/admin/coupon/CouponForm';
+import PhoneAuth from './pages/common/Phone';
+import { useAuth } from './helper/AuthHelper';
+import { showToast } from './helper/UiHelper';
+
+function AuthInitializationNotice() {
+    const { initializationError } = useAuth();
+
+    useEffect(() => {
+        if (initializationError) {
+            showToast('error', `Account server unavailable: ${initializationError}`);
+        }
+    }, [initializationError]);
+
+    return null;
+}
 
 function App() {
     return (
         <AuthProvider>
             <LangProvider>
+                <AuthInitializationNotice />
                 <ToastContainer position="top-right" autoClose={3000} newestOnTop closeOnClick pauseOnHover />
                 <Routes>
                     <Route path={AUTH_ROUTE.REGISTER} element={<Register />} />
                     <Route path={AUTH_ROUTE.LOGIN} element={<Login />} />
-
+                    <Route path={AUTH_ROUTE.PHONE} element={<PhoneAuth />} />
                     <Route element={<PrivateRoute roles={[ROLES.ADMIN, ROLES.USER]} />}>
                         <Route path={CLIENT_ROUTE.HOME} element={<StoreHome />} />
                         <Route path={CLIENT_ROUTE.PROFILE} element={<StoreProfile />} />

@@ -1,7 +1,8 @@
 export const AUTH_ROUTE = {
     ERROR: "*",
     LOGIN: "/login",
-    REGISTER: "/register"
+    REGISTER: "/register",
+    PHONE: "/phone"
 };
 
 export const CLIENT_ROUTE = {

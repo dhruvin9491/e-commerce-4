@@ -5,6 +5,11 @@ export const ROLES = {
     USER: "user"
 }
 
+export const AUTH_PROVIDER = {
+    GOOGLE: "google",
+    PHONE: "phone"
+}
+
 export const DEFAULT_ADMIN = {
     name: "admin",
     email: "admin@gmail.com",

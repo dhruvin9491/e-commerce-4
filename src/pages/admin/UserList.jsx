@@ -7,6 +7,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import PersonOffIcon from '@mui/icons-material/PersonOff';
 import RestoreIcon from '@mui/icons-material/Restore';
+import AdminRecordId from '../../components/admin/AdminRecordId';
 import { fetchUsers, toggleUserStatus } from "../../redux/actions/userActions";
 
 function UserList() {
@@ -46,8 +47,6 @@ function UserList() {
                 search={search}
                 onSearch={setSearch}
                 placeholder="Search users..."
-                hasFilters={Boolean(search || role !== 'all' || roleSort !== 'default')}
-                onReset={() => { setSearch(''); setRole('all'); setRoleSort('default'); }}
             >
                 <select value={role} onChange={(event) => setRole(event.target.value)} className="form-control form-select">
                     <option value="all">All roles</option>
@@ -62,11 +61,11 @@ function UserList() {
             </AdminToolbar>
         )} />
         <div className="admin-table-wrap">
-            <table className="table align-middle mb-0 admin-table"><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th className="admin-table__actions">Actions</th></tr></thead>
+            <table className="table align-middle mb-0 admin-table"><thead><tr><th className="admin-table__id-column">User ID</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th className="admin-table__actions">Actions</th></tr></thead>
                 <tbody>{filteredUsers.length ? filteredUsers.map((user) => <tr key={user.id} className={user.isDeleted ? "text-muted" : ""}>
-                    <td className="fw-semibold">{user.name || `${user.firstname || ''} ${user.lastname || ''}`.trim() || 'Unnamed user'}</td><td>{user.email}</td><td><span className="badge bg-light text-dark text-capitalize">{user.role}</span></td>
+                    <td className="admin-table__id-column"><AdminRecordId id={user.id} /></td><td className="fw-semibold">{user.name || `${user.firstname || ''} ${user.lastname || ''}`.trim() || 'Unnamed user'}</td><td>{user.email}</td><td><span className="badge bg-light text-dark text-capitalize">{user.role}</span></td>
                     <td><span className={`status-badge ${user.isDeleted ? 'status-badge--inactive' : 'status-badge--active'}`}>{user.isDeleted ? 'Inactive' : 'Active'}</span></td><td className="admin-table__actions"><div className="admin-table__action-drawer"><Tooltip title="Actions"><IconButton className="admin-table__action-trigger" size="small" aria-label={`Actions for ${user.name || user.email}`}><MoreHorizIcon fontSize="small" /></IconButton></Tooltip><div className="admin-table__action-tools"><Tooltip title={user.isDeleted ? 'Restore user' : 'Deactivate user'}><IconButton className={user.isDeleted ? 'admin-table__icon--success' : 'admin-table__icon--danger'} size="small" onClick={() => toggleUser(user)} aria-label={user.isDeleted ? 'Restore user' : 'Deactivate user'}>{user.isDeleted ? <RestoreIcon fontSize="small" /> : <PersonOffIcon fontSize="small" />}</IconButton></Tooltip></div></div></td>
-                </tr>) : <tr><td colSpan="5" className="review-table__empty">No users match the current filters.</td></tr>}</tbody>
+                </tr>) : <tr><td colSpan="6" className="review-table__empty">No users match the current filters.</td></tr>}</tbody>
             </table>
         </div>
         {error && <p className="text-danger mt-3">{error}</p>}

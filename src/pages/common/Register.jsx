@@ -1,6 +1,7 @@
 import { useFormik } from 'formik';
 import React from 'react';
 import Input from '../../components/common/Input';
+import AuthPageHeader from '../../components/common/AuthPageHeader';
 import { Link, useNavigate } from 'react-router-dom';
 import { AUTH_ROUTE } from '../../constants/RoutesConstant';
 import { ROLES } from '../../constants/CommonConstant';
@@ -38,28 +39,29 @@ function Register() {
     return (
         <main className="auth-screen">
             <section className="auth-panel">
+                <AuthPageHeader title="Create your account" description="Sign up to shop and keep track of your orders." />
                 <form onSubmit={formik.handleSubmit}>
                     <div className="mb-3">
-                        <Input name="firstname" type="text" placeholder="First name" formik={formik} />
+                        <Input name="firstname" type="text" label="First name" placeholder="First name" formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="lastname" type="text" placeholder="Last name" formik={formik} />
+                        <Input name="lastname" type="text" label="Last name" placeholder="Last name" formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="email" type="email" placeholder="Email" formik={formik} />
+                        <Input name="email" type="email" label="Email address" placeholder="you@example.com" formik={formik} />
                     </div>
 
                     <div className="mb-3">
-                        <Input name="password" type="password" placeholder="Password" formik={formik} />
+                        <Input name="password" type="password" label="Password" placeholder="Create a password" formik={formik} />
                     </div>
 
-                    <button className="btn btn-primary btn-block" type="submit">
+                    <button className="btn btn-primary w-100" type="submit">
                         Register
                     </button>
 
-                    <p className="my-3 text-center">
+                    <p className="auth-form__footer">
                         Have an account?
                         <Link to={AUTH_ROUTE.LOGIN}> Sign in</Link>
                     </p>

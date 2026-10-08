@@ -6,6 +6,7 @@ import { fetchReviews, toggleReviewDeleted, toggleReviewVisibility } from '../..
 import AdminPageHeader from '../../../components/admin/AdminPageHeader';
 import AdminToolbar from '../../../components/admin/AdminToolbar';
 import AdminButton from '../../../components/admin/AdminButton';
+import AdminRecordId from '../../../components/admin/AdminRecordId';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RestoreFromTrashIcon from '@mui/icons-material/RestoreFromTrash';
@@ -50,8 +51,6 @@ function ReviewList() {
                     search={search}
                     onSearch={setSearch}
                     placeholder="Search reviews..."
-                    hasFilters={Boolean(search || dateFrom || dateTo)}
-                    onReset={() => { setSearch(''); setDateFrom(''); setDateTo(''); }}
                 >
                     <label className="admin-date-filter">From <input className='form-control' type="date" value={dateFrom} onChange={(event) => setDateFrom(event.target.value)} /></label>
                     <label className="admin-date-filter">To <input className='form-control' type="date" value={dateTo} onChange={(event) => setDateTo(event.target.value)} /></label>
@@ -62,14 +61,14 @@ function ReviewList() {
                 <table className="table align-middle mb-0 admin-table">
                     <thead>
                         <tr>
-                            <th>Id</th><th>Reviewer</th><th>Feedback</th><th>Author</th><th>Rating</th><th>Product ID</th><th>Actions</th>
+                            <th className="admin-table__id-column">Review ID</th><th>Reviewer</th><th>Feedback</th><th>Author</th><th>Rating</th><th>Product ID</th><th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {filteredReviews.length ? filteredReviews.map((r) =>
                             <tr key={r.id} className={r.isDeleted ? 'text-muted' : ''}>
-                                <td>
-                                    <strong className="review-table__id">{r.id}</strong>
+                                <td className="admin-table__id-column">
+                                    <AdminRecordId id={r.id} />
                                     <small>{formatDate(r.createdAt)}</small>
                                 </td>
                                 <td>

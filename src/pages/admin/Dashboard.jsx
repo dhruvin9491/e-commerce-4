@@ -1,32 +1,131 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
+import PeopleOutlinedIcon from '@mui/icons-material/PeopleOutlined';
+import RateReviewOutlinedIcon from '@mui/icons-material/RateReviewOutlined';
+import WarningAmberOutlinedIcon from '@mui/icons-material/WarningAmberOutlined';
+import { ROLES } from '../../constants/CommonConstant';
+import { ADMIN_ROUTE } from '../../constants/RoutesConstant';
 import { fetchProducts } from '../../redux/actions/productActions';
 import { fetchUsers } from '../../redux/actions/userActions';
 import { fetchReviews } from '../../redux/actions/reviewActions';
 
-function Dashboard(props) {
+const DASHBOARD_STATS = [
+    {
+        key: 'products',
+        label: 'Products',
+        description: 'Available in your catalog',
+        icon: Inventory2OutlinedIcon,
+        route: ADMIN_ROUTE.PRODUCT_LIST
+    },
+    {
+        key: 'users',
+        label: 'Customers',
+        description: 'Active customer accounts',
+        icon: PeopleOutlinedIcon,
+        route: ADMIN_ROUTE.USER_LIST
+    },
+    {
+        key: 'reviews',
+        label: 'Reviews',
+        description: 'Published customer reviews',
+        icon: RateReviewOutlinedIcon,
+        route: ADMIN_ROUTE.REVIEW_LIST
+    }
+];
+
+function Dashboard() {
     const dispatch = useDispatch();
-    const products = useSelector((state) => state.products.data);
-    const users = useSelector((state) => state.users.data);
-    const reviews = useSelector((state) => state.reviews.data);
+    const productsState = useSelector((state) => state.products);
+    const usersState = useSelector((state) => state.users);
+    const reviewsState = useSelector((state) => state.reviews);
+    const products = productsState.data;
+    const users = usersState.data;
+    const reviews = reviewsState.data;
+
     useEffect(() => {
-        dispatch(fetchProducts()).catch(() => null);
-        dispatch(fetchUsers()).catch(() => null);
-        dispatch(fetchReviews()).catch(() => null);
+        dispatch(fetchProducts()).catch(() => {});
+        dispatch(fetchUsers()).catch(() => {});
+        dispatch(fetchReviews()).catch(() => {});
     }, [dispatch]);
-    return <main className="container-fluid py-5 px-4">
-        <div className="mb-5">
-            <span className="eyebrow">Overview</span>
-            <h1 className="display-5 mt-2 mb-2">Good morning, admin.</h1>
-            <p className="text-muted mb-0">Keep a clear view of the store and its customer feedback.</p>
-        </div>
-        <div className="row g-3">
-            <div className="col-lg-4"><div className="card h-100 border-0 border-top border-4 border-danger rounded-0 shadow-sm p-4"><span className="text-muted small text-uppercase fw-bold">Catalog</span><strong className="display-6 my-3">{products.length}</strong><small className="text-muted">Products in store</small></div></div>
-            <div className="col-lg-4"><div className="card h-100 border-0 border-top border-4 border-success rounded-0 shadow-sm p-4"><span className="text-muted small text-uppercase fw-bold">Community</span><strong className="display-6 my-3">{users.length}</strong><small className="text-muted">Registered users</small></div></div>
-            <div className="col-lg-4"><div className="card h-100 border-0 border-top border-4 border-warning rounded-0 shadow-sm p-4"><span className="text-muted small text-uppercase fw-bold">Feedback</span><strong className="display-6 my-3">{reviews.length}</strong><small className="text-muted">Reviews in workspace</small></div></div>
-        </div>
-        <section className="bg-success-subtle mt-3 p-4"><span className="eyebrow">Quick check</span><h2 className="h3 mt-2">Small details, better storefront.</h2><p className="text-muted mb-0">Review product visibility, keep customer accounts tidy, and surface useful feedback from the admin navigation.</p></section>
-    </main>;
+
+    const productCount = products.filter((product) => !product.isDeleted && product.isActive).length;
+    const customerCount = users.filter((user) => !user.isDeleted && user.role !== ROLES.ADMIN).length;
+    const publishedReviewCount = reviews.filter((review) => !review.isDeleted && review.isActive).length;
+    const lowStockCount = products.filter((product) => !product.isDeleted && product.stock < 10).length;
+    const pendingReviewCount = reviews.filter((review) => !review.isDeleted && !review.isActive).length;
+    const errors = [productsState.error, usersState.error, reviewsState.error].filter(Boolean);
+
+    const statValues = {
+        products: productsState.loading && !products.length ? '—' : productCount,
+        users: usersState.loading && !users.length ? '—' : customerCount,
+        reviews: reviewsState.loading && !reviews.length ? '—' : publishedReviewCount
+    };
+
+    return (
+        <main className="admin-dashboard">
+            <header className="admin-dashboard__heading">
+                <div>
+                    <span className="eyebrow">Store overview</span>
+                    <h1>Dashboard</h1>
+                    <p>A snapshot of your catalog, customers, and store activity.</p>
+                </div>
+                <Link className="button button--dark admin-dashboard__view-store" to="/">
+                    View storefront <ArrowForwardIcon fontSize="small" />
+                </Link>
+            </header>
+
+            {errors.length > 0 && (
+                <div className="admin-dashboard__notice" role="alert">
+                    Some dashboard data could not be loaded: {errors.join(' · ')}
+                </div>
+            )}
+
+            <section className="admin-dashboard__stats" aria-label="Store statistics">
+                {DASHBOARD_STATS.map(({ key, label, description, icon: Icon, route }) => (
+                    <Link className={`admin-dashboard__stat admin-dashboard__stat--${key}`} to={route} key={key}>
+                        <span className="admin-dashboard__stat-icon"><Icon /></span>
+                        <span className="admin-dashboard__stat-copy">
+                            <span className="admin-dashboard__stat-label">{label}</span>
+                            <strong>{statValues[key]}</strong>
+                            <span className="admin-dashboard__stat-description">{description}</span>
+                        </span>
+                        <ArrowForwardIcon className="admin-dashboard__stat-arrow" fontSize="small" />
+                    </Link>
+                ))}
+            </section>
+
+            <section className="admin-dashboard__lower">
+                <div className="admin-dashboard__panel">
+                    <div className="admin-dashboard__panel-heading">
+                        <div>
+                            <span className="eyebrow">Needs attention</span>
+                            <h2>Store health</h2>
+                        </div>
+                        <WarningAmberOutlinedIcon aria-hidden="true" />
+                    </div>
+                    <Link to={ADMIN_ROUTE.PRODUCT_LIST} className="admin-dashboard__health-row">
+                        <span>Products running low on stock</span>
+                        <strong>{lowStockCount}</strong>
+                    </Link>
+                    <Link to={ADMIN_ROUTE.REVIEW_LIST} className="admin-dashboard__health-row">
+                        <span>Reviews awaiting moderation</span>
+                        <strong>{pendingReviewCount}</strong>
+                    </Link>
+                </div>
+
+                <div className="admin-dashboard__panel admin-dashboard__shortcuts">
+                    <span className="eyebrow">Shortcuts</span>
+                    <h2>Get things done</h2>
+                    <Link to={ADMIN_ROUTE.PRODUCT_CREATE}>Add a product <ArrowForwardIcon fontSize="small" /></Link>
+                    <Link to={ADMIN_ROUTE.COUPON_CREATE}>Create a coupon <ArrowForwardIcon fontSize="small" /></Link>
+                    <Link to={ADMIN_ROUTE.USER_LIST}>Manage customer accounts <ArrowForwardIcon fontSize="small" /></Link>
+                </div>
+            </section>
+        </main>
+    );
 }
 
 export default Dashboard;
