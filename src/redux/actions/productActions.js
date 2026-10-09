@@ -1,6 +1,7 @@
 import { PRODUCT_ACTION } from "../../constants/ActionConstant";
 import { PRODUCT_API } from "../../constants/ApiConstant";
 import { createData, deleteData, getData, updateData } from "../../helper/ApiHelper";
+import { createDocument, getCollection } from "../../helper/FirestoreHelper";
 
 const dispatchError = (dispatch, type, error) => {
     dispatch({ type, payload: error.message || "Internal server error" });
@@ -10,8 +11,9 @@ const dispatchError = (dispatch, type, error) => {
 export const fetchProducts = () => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_ACTION.FETCH_LOADING });
-        const response = await getData(PRODUCT_API);
-        dispatch({ type: PRODUCT_ACTION.FETCH_SUCCESS, payload: response.data });
+        // const response = await getData(PRODUCT_API);
+        const response = await getCollection("products")
+        dispatch({ type: PRODUCT_ACTION.FETCH_SUCCESS, payload: response });
         return response.data;
     } catch (error) {
         return dispatchError(dispatch, PRODUCT_ACTION.FETCH_ERROR, error);
@@ -32,9 +34,10 @@ export const fetchProduct = (id) => async (dispatch) => {
 export const createProduct = (product) => async (dispatch) => {
     try {
         dispatch({ type: PRODUCT_ACTION.CREATE_LOADING });
-        const response = await createData(PRODUCT_API, product);
-        dispatch({ type: PRODUCT_ACTION.CREATE_SUCCESS, payload: response.data });
-        return response.data;
+        // const response = await createData(PRODUCT_API, product);
+        const response = await createDocument("products", product);
+        dispatch({ type: PRODUCT_ACTION.CREATE_SUCCESS, payload: response });
+        // return response.data;
     } catch (error) {
         return dispatchError(dispatch, PRODUCT_ACTION.CREATE_ERROR, error);
     }
